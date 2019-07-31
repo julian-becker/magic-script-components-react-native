@@ -43,6 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property vector_float3 scale;
 @end
 
+@interface MLXRBoundedVolumeExtents : NSObject
+@property vector_float3 extents;
+@end
+
 @interface MLXRBoundedVolume : NSObject
 /// Default @c init is disabled.
 - (instancetype)init NS_UNAVAILABLE;
@@ -52,6 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (MLXRBoundedVolumePose * _Nullable)getPose;
 
 - (MLXRBoundedVolumeScale * _Nullable)getScale;
+
+- (MLXRBoundedVolumeExtents * _Nullable)getExtents;
 
 - (NSUUID * _Nullable)getId;
 

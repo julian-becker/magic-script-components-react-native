@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param apiAnchor Anchor handle.
 ///
 /// @return The anchor instance.
-- (instancetype)initWith:(id)apiAnchor;
+- (instancetype)initWith:(void*)apiAnchor;
 
 /// Gets the anchor state.
 ///

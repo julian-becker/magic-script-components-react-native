@@ -59,19 +59,26 @@ class XrClientSession: NSObject {
     }
 
     @objc
-    public func connect(_ address: String, deviceId: String, token: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let arSession = XrClientSession.arSession else {
-            reject("code", "ARSession does not exist.", nil)
-            return
-        }
+    public func connect(_ address: String, deviceId: String, token: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                reject("code", "ARSession does not exist.", nil)
+                return
+            }
+            
+            guard let arSession = XrClientSession.arSession else {
+                reject("code", "ARSession does not exist.", nil)
+                return
+            }
 
-        xrClientSession = MLXRSession(0, arSession)
-        if let xrSession = xrClientSession {
-            let result: Bool = xrSession.connect(address, deviceId, token)
-            resetTimer()
-            resolve(result)
-        } else {
-            reject("code", "XrClientSession has not been initialized!", nil)
+            self.xrClientSession = MLXRSession(0, arSession)
+            if let xrSession = self.xrClientSession {
+                let result: Bool = xrSession.connect(address, deviceId, token)
+                self.resetTimer()
+                resolve(result)
+            } else {
+                reject("code", "XrClientSession has not been initialized!", nil)
+            }
         }
     }
 
@@ -114,62 +121,76 @@ class XrClientSession: NSObject {
     }
 
     @objc
-    public func getAllAnchors(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let xrSession = xrClientSession else {
-            reject("code", "XrClientSession has not been initialized!", nil)
-            return
-        }
-        let allAnchors: [MLXRAnchor] = xrSession.getAllAnchors()
-        let uniqueAnchors: [XrClientAnchorData] = allAnchors.map { XrClientAnchorData($0) }
-
-        // Remove current local anchors
-        if let currentAnchors = XrClientSession.arSession?.currentFrame?.anchors {
-            for anchor in currentAnchors {
-                XrClientSession.arSession?.remove(anchor: anchor)
+    public func getAllAnchors(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            guard let xrSession = self?.xrClientSession else {
+                reject("code", "XrClientSession has not been initialized!", nil)
+                return
             }
-        }
+            let allAnchors: [MLXRAnchor] = xrSession.getAllAnchors()
+            let uniqueAnchors: [XrClientAnchorData] = allAnchors.map { XrClientAnchorData($0) }
 
-        // Only add unique anchors to the list, for existing ones just update the pose.
-        for anchor in uniqueAnchors {
-            let testAnchor = ARAnchor(name: anchor.getAnchorId(), transform: anchor.getMagicPose())
-            XrClientSession.arSession?.add(anchor: testAnchor)
-        }
+            // Remove current local anchors
+            if let currentAnchors = XrClientSession.arSession?.currentFrame?.anchors {
+                for anchor in currentAnchors {
+                    XrClientSession.arSession?.remove(anchor: anchor)
+                }
+            }
 
-        let results: [[String: Any]] = uniqueAnchors.map { $0.getJsonRepresentation() }
-        resolve(results)
+            // Only add unique anchors to the list, for existing ones just update the pose.
+            for anchor in uniqueAnchors {
+                let testAnchor = ARAnchor(name: anchor.getAnchorId(), transform: anchor.getMagicPose())
+                XrClientSession.arSession?.add(anchor: testAnchor)
+            }
+
+            let results: [[String: Any]] = uniqueAnchors.map { $0.getJsonRepresentation() }
+            resolve(results)
+        }
     }
 
     @objc
-    public func getAnchorByPcfId(pcfId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let uuid = UUID(uuidString: pcfId) else {
-            reject("code", "Incorrect PCF id", nil)
-            return
-        }
+    public func getAnchorByPcfId(pcfId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                reject("code", "Bad state", nil)
+                return
+            }
+            guard let uuid = UUID(uuidString: pcfId) else {
+                reject("code", "Incorrect PCF id", nil)
+                return
+            }
 
-        guard let xrSession = xrClientSession else {
-            reject("code", "XrClientSession has not been initialized!", nil)
-            return
-        }
+            guard let xrSession = self.xrClientSession else {
+                reject("code", "XrClientSession has not been initialized!", nil)
+                return
+            }
 
-        guard let anchorData = xrSession.getAnchorByPcfId(uuid) else {
-            // Achor data does not exist for given PCF id
-            resolve(nil)
-            return
-        }
+            guard let anchorData = xrSession.getAnchorByPcfId(uuid) else {
+                // Achor data does not exist for given PCF id
+                resolve(nil)
+                return
+            }
 
-        let result: [String : Any] = XrClientAnchorData(anchorData).getJsonRepresentation()
-        resolve(result)
+            let result: [String : Any] = XrClientAnchorData(anchorData).getJsonRepresentation()
+            resolve(result)
+        }
     }
 
     @objc
-    public func getLocalizationStatus(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let xrSession = xrClientSession else {
-            reject("code", "XrClientSession has not been initialized!", nil)
-            return
-        }
+    public func getLocalizationStatus(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                reject("code", "Bad state", nil)
+                return
+            }
+            guard let xrSession = self.xrClientSession else {
+                reject("code", "XrClientSession has not been initialized!", nil)
+                return
+            }
 
-        let status: XrClientLocalization = XrClientLocalization(localizationStatus: xrSession.getLocalizationStatus()?.status ?? MLXRLocalizationStatus_LocalizationFailed)
-        resolve(status.rawValue)
+            let status: XrClientLocalization = XrClientLocalization(localizationStatus: xrSession.getLocalizationStatus()?.status ?? MLXRLocalizationStatus_LocalizationFailed)
+            resolve(status.rawValue)
+        }
     }
 
     @objc
@@ -178,14 +199,20 @@ class XrClientSession: NSObject {
     }
     
     @objc
-    public func getAllBoundedVolumes(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let xrSession = xrClientSession else {
-            reject("code", "XrClientSession has not been initialized!", nil)
-            return
+    public func getAllBoundedVolumes(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                reject("code", "Bad state", nil)
+                return
+            }
+            guard let xrSession = self.xrClientSession else {
+                reject("code", "XrClientSession has not been initialized!", nil)
+                return
+            }
+            let volumes = xrSession.getAllBoundedVolumes()
+            let uniqueVolumes: [[String:Any]] = volumes.map { XrClientBoundedVolume($0).getJsonRepresentation() }
+            resolve(uniqueVolumes)
         }
-        let volumes = xrSession.getAllBoundedVolumes()
-        let uniqueVolumes: [[String:Any]] = volumes.map { XrClientBoundedVolume($0).getJsonRepresentation() }
-        resolve(uniqueVolumes)
         
     }
 }

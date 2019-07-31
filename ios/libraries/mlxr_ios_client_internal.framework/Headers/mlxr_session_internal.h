@@ -31,7 +31,7 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 #import <Foundation/Foundation.h>
-#import <mlxr_ios_client_internal/mlxr_session.h>
+#import "mlxr_session.h"
 #import "mlxr_bounded_volume.h"
 
 NS_ASSUME_NONNULL_BEGIN

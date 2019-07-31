@@ -33,8 +33,8 @@
 #import <Foundation/Foundation.h>
 #import <ARKit/ARKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import <mlxr_ios_client_internal/mlxr_anchor.h>
-#import <mlxr_ios_client_internal/mlxr_localization.h>
+#import "mlxr_anchor.h"
+#import "mlxr_localization.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
