@@ -139,59 +139,17 @@ class XrClientSession: NSObject {
 
             let bvs = xrSession.getAllBoundedVolumes()
             print("getAllBoundedVolumes:" + String(bvs.count))
-//            var myOffset: simd_float4x4 = simd_float4x4()
-            var bvMatrix: [String: simd_float4x4] = [:];
+            var pcfToPPMap: [String: String] = ["FC6F3CDC-AE59-7018-A731-0242C0A8FE0A":"18705642-9905-0D2C-033F-012590DA579D",
+                                                "FC6F4682-AE59-7018-8AEE-0242C0A8FE0A":"187061F0-A75A-29A0-DFF2-5BBD9C0B7994"];
             for bv in bvs {
-                //if (bv.getId()!.uuidString.starts(with: "2C0D0599")) {
-                if (bv.getId()!.uuidString.uppercased() == "FC6F3CDC-AE59-7018-A731-0242C0A8FE0A") {
-//                    print(bv.getPose()?.pose)
-                    bvMatrix["18705642-9905-0D2C-033F-012590DA579D"] = bv.getPose()?.pose;
-                } else if (bv.getId()!.uuidString.lowercased() == "fc6f4682-ae59-7018-8aee-0242c0a8fe0a") {
-                    bvMatrix["187061F0-A75A-29A0-DFF2-5BBD9C0B7994"] = bv.getPose()?.pose;
+                if let ppid = pcfToPPMap[bv.getId()!.uuidString], let pcfID: UUID = UUID.init(uuidString: ppid), let sdkAncror = xrSession.getAnchorByPcfId(pcfID), let bvMatrix = bv.getPose() {
+                    let xrAnchor = XrClientAnchorData(sdkAncror);
+                    let pose: simd_float4x4 = xrAnchor.getMagicPose() * bvMatrix.pose;
+                    let testAnchor = ARAnchor(name: xrAnchor.getAnchorId(), transform: pose)
+                    XrClientSession.arSession?.add(anchor: testAnchor)
                 }
-                //fc6f4682-ae59-7018-8aee-0242c0a8fe0a | a0295aa7-f061-7018-9479-0b9cbd5bf2df
             }
             
-            // Only add unique anchors to the list, for existing ones just update the pose.
-            for anchor in uniqueAnchors {
-                print("anchor id:" + anchor.getAnchorId())
-                var pose: simd_float4x4 = anchor.getMagicPose()
-                if (anchor.getAnchorId().uppercased() == "18705642-9905-0D2C-033F-012590DA579D") {
-//                    let offsetMatrix = simd_float4x4(
-//                        simd_make_float4(0.941866, 0.13206, -0.308947, 0),
-//                        simd_make_float4(-0.0465598, 0.961946, 0.269242, 0),
-//                        simd_make_float4(0.332747, -0.239205, 0.912174, 0),
-//                        simd_make_float4(-0.729588, -0.0187979, -0.0351334, 1)
-//                    );
-                    if let offset = bvMatrix["18705642-9905-0D2C-033F-012590DA579D"] {
-                        pose = pose * offset
-                    }
-//                    // hack to position correctly
-//                    pose = pose * unsafeBitCast(GLKMatrix4MakeTranslation(0, 0, -0.25), to: float4x4.self)
-//                    let testAnchor = ARAnchor(name: anchor.getAnchorId(), transform: pose)
-//                    XrClientSession.arSession?.add(anchor: testAnchor)
-                    } else if (anchor.getAnchorId().uppercased() == "187061F0-A75A-29A0-DFF2-5BBD9C0B7994") {
-                    if let offset = bvMatrix["187061F0-A75A-29A0-DFF2-5BBD9C0B7994"] {
-                        pose = pose * offset
-                    }
-                    //                    pose = pose * unsafeBitCast(GLKMatrix4MakeTranslation(0, 0, -0.25), to: float4x4.self)
-//                    let testAnchor = ARAnchor(name: anchor.getAnchorId(), transform: pose)
-//                    XrClientSession.arSession?.add(anchor: testAnchor)
-//                    matrix:{
-//                        w:0, y:-0.16235, x:0.456896, z:0.874579,
-//                        w:0, y:0.978622, x:-0.0388529, z:0.201962,
-//                        w:0, y:-0.126255, x:-0.888671, z:0.440821,
-//                        w:1, y:-0.291069, x:1.44098, z:1.5512
-//                    },
-//
-//
-//
-////                    pose = pose * offsetMatrix
-                }
-                let testAnchor = ARAnchor(name: anchor.getAnchorId(), transform: pose)
-                XrClientSession.arSession?.add(anchor: testAnchor)
-            }
-
             let results: [[String: Any]] = uniqueAnchors.map { $0.getJsonRepresentation() }
             resolve(results)
         }
