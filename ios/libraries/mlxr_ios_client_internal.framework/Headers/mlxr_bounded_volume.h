@@ -35,6 +35,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef struct MLXrBV MLXrBV;
+
 @interface MLXRBoundedVolumePose : NSObject
 @property matrix_float4x4 pose;
 @end
@@ -51,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Default @c init is disabled.
 - (instancetype)init NS_UNAVAILABLE;
 
-- (instancetype)initWith:(id)handle;
+- (instancetype)initWith:(MLXrBV *)handle;
 
 - (MLXRBoundedVolumePose * _Nullable)getPose;
 

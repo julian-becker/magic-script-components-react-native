@@ -35,6 +35,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef struct MLXrAnchor MLXrAnchor;
+
 /// Contains information about the anchor state.
 @interface MLXRAnchorState : NSObject
 {
@@ -85,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param apiAnchor Anchor handle.
 ///
 /// @return The anchor instance.
-- (instancetype)initWith:(void*)apiAnchor;
+- (instancetype)initWith:(MLXrAnchor *)apiAnchor;
 
 /// Gets the anchor state.
 ///
