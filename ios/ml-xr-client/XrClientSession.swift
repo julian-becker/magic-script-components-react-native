@@ -17,8 +17,6 @@ class XrClientSession: NSObject {
     static fileprivate weak var arSession: ARSession?
     static fileprivate let locationManager = CLLocationManager()
     fileprivate var xrClientSession: MLXRSession?
-    fileprivate var updateInterval: TimeInterval = 2.0
-    fileprivate var timer: Timer?
     fileprivate var internalLocation: CLLocation!
     fileprivate let internalLocationQueue: DispatchQueue = DispatchQueue(label: "internalLocationQueue")
     fileprivate var lastLocation: CLLocation? {
@@ -36,8 +34,6 @@ class XrClientSession: NSObject {
     }
 
     deinit {
-        timer?.invalidate()
-
         // NOTE: Due to the following warning:
         // "Failure to deallocate CLLocationManager on the same runloop as its creation
         // may result in a crash"
@@ -74,7 +70,9 @@ class XrClientSession: NSObject {
             self.xrClientSession = MLXRSession(0, arSession)
             if let xrSession = self.xrClientSession {
                 let result: Bool = xrSession.connect(address, deviceId, token)
-                self.resetTimer()
+                if (arSession.delegate == nil) {
+                    arSession.delegate = self;
+                }
                 resolve(result)
             } else {
                 reject("code", "XrClientSession has not been initialized!", nil)
@@ -84,22 +82,7 @@ class XrClientSession: NSObject {
 
     @objc
     public func setUpdateInterval(_ interval: TimeInterval, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        updateInterval = max(0.5, interval)
-        resetTimer()
         resolve(true)
-    }
-
-    fileprivate func resetTimer() {
-        guard Thread.isMainThread else {
-            DispatchQueue.main.async { [weak self] in
-                self?.resetTimer()
-            }
-            return
-        }
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true, block: { [weak self] _ in
-            self?.update()
-        })
     }
 
     fileprivate func update() {
@@ -238,5 +221,11 @@ class XrClientSession: NSObject {
 extension XrClientSession: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         lastLocation = locations.last
+    }
+}
+
+extension XrClientSession: ARSessionDelegate {
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        self.update();
     }
 }
