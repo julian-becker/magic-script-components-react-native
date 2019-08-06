@@ -33,6 +33,9 @@
     view.autoenablesDefaultLighting = YES;
     view.rendersContinuously = YES;
     view.scene.rootNode.name = @"root";
+    view.debugOptions = ARSCNDebugOptionShowWorldOrigin | ARSCNDebugOptionShowFeaturePoints;
+    // view.showsStatistics = YES;
+
 
 #if TARGET_IPHONE_SIMULATOR
     // Allow for basic orbit gestures if we're running in the simulator
