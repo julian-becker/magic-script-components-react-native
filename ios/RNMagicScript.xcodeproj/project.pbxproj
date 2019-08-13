@@ -79,13 +79,8 @@
 		449AF4A322B248090046938D /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49522B248090046938D /* SCNMatrix4Extension.swift */; };
 		449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49622B248090046938D /* SCNVector3Extension.swift */; };
 		449AF4A522B248090046938D /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49722B248090046938D /* UiNodesManager.swift */; };
-		44E73D0B22E85E2B00AE779D /* XrClientAnchorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0722E85E2B00AE779D /* XrClientAnchorData.swift */; };
-		44E73D0C22E85E2B00AE779D /* XrClientSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0822E85E2B00AE779D /* XrClientSession.m */; };
-		44E73D0D22E85E2B00AE779D /* XrClientSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0922E85E2B00AE779D /* XrClientSession.swift */; };
-		44E73D0E22E85E2B00AE779D /* XrClientLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0A22E85E2B00AE779D /* XrClientLocalization.swift */; };
 		44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UIModelNode.swift */; };
 		BC813B8122ED7AA7004658D4 /* mlxr_ios_client_internal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC813B8022ED7AA7004658D4 /* mlxr_ios_client_internal.framework */; };
-		BC813B8322ED8166004658D4 /* XRClientBoundedVolume.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC813B8222ED8166004658D4 /* XRClientBoundedVolume.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -644,7 +639,6 @@
 				449AF49B22B248090046938D /* UiTextNode.swift in Sources */,
 				44318EB822CE29250060575D /* Measures.swift in Sources */,
 				449AF4A322B248090046938D /* SCNMatrix4Extension.swift in Sources */,
-				44E73D0B22E85E2B00AE779D /* XrClientAnchorData.swift in Sources */,
 				4447D4A622BC2BC40043CA89 /* GLTFMaterialOcclusionTextureInfo.swift in Sources */,
 				4447D49B22BC2BC40043CA89 /* GLTFAccessor.swift in Sources */,
 				447C23EB22F05DD700F9A8F6 /* UiToggleNode.swift in Sources */,
@@ -654,7 +648,6 @@
 				449AF49A22B248090046938D /* UiGroupNode.swift in Sources */,
 				449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */,
 				4447D49922BC2BC40043CA89 /* GLTFImage.swift in Sources */,
-				44E73D0C22E85E2B00AE779D /* XrClientSession.m in Sources */,
 				447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */,
 				449AF4A222B248090046938D /* SCNQuaternionExtension.swift in Sources */,
 				44107CEE22E888070007CBF5 /* UiGridLayoutNode.swift in Sources */,
@@ -662,10 +655,8 @@
 				4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
 				44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */,
-				44E73D0D22E85E2B00AE779D /* XrClientSession.swift in Sources */,
 				4447D49C22BC2BC40043CA89 /* GLTFExtension.swift in Sources */,
 				4447D48F22BC2BC40043CA89 /* GLTFGlTF.swift in Sources */,
-				44E73D0E22E85E2B00AE779D /* XrClientLocalization.swift in Sources */,
 				4447D4A422BC2BC40043CA89 /* GLTFCamera.swift in Sources */,
 				4447D49222BC2BC40043CA89 /* GLTFTexture.swift in Sources */,
 				4447D49122BC2BC40043CA89 /* GLTFAnimationSampler.swift in Sources */,
@@ -699,7 +690,6 @@
 				44318EBA22CE29CA0060575D /* UiTextEditNode.swift in Sources */,
 				4447D48C22BC2BC40043CA89 /* GLTFScene.swift in Sources */,
 				44318EB622CE28EA0060575D /* OutlineNode.swift in Sources */,
-				BC813B8322ED8166004658D4 /* XRClientBoundedVolume.swift in Sources */,
 				4447D49622BC2BC40043CA89 /* GLTFMesh.swift in Sources */,
 				4447D49322BC2BC40043CA89 /* GLTFTextureInfo.swift in Sources */,
 				449AF49822B248090046938D /* TransformNode.swift in Sources */,

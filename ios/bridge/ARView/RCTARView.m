@@ -52,7 +52,7 @@
     [UiNodesManager.instance registerScene:view.scene];
 
     // Register ARSession in MLXrClientSession
-    [XrClientSession registerARSession:view.session];
+//    [XrClientSession registerARSession:view.session];
     view.delegate = self;
 
     // Add AR view as a child
