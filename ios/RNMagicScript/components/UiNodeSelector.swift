@@ -20,13 +20,16 @@ import SceneKit
 @objc open class UiNodeSelector: NSObject {
 
     let rootNode: SCNNode
+    let planeNodes: (() -> [TransformNode])
 
-    init(_ rootNode: SCNNode) {
+    init(_ rootNode: SCNNode,_ planeNodes: @escaping (() -> [TransformNode])) {
         self.rootNode = rootNode
+        self.planeNodes = planeNodes
     }
 
     @objc func hitTest(ray: Ray) -> TransformNode? {
-        let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
+        var topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
+        topNodes.append(contentsOf: planeNodes())
         var hitNodes: [TransformNode] = []
 
         for node in topNodes {

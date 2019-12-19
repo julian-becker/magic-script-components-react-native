@@ -47,6 +47,12 @@ import SceneKit
         }
     }
 
+    @objc public var planeDetection: Bool = false {
+        didSet {
+            planeDetection ? enablePlaneDetection() : disablePlaneDetection()
+        }
+    }
+
     @objc public var rendersContinuously: Bool {
         get { return arView.rendersContinuously }
         set { arView.rendersContinuously = newValue }
@@ -58,7 +64,6 @@ import SceneKit
 
         guard let _ = _configuration else  {
             _configuration = ARWorldTrackingConfiguration()
-            // _configuration.planeDetection = ARPlaneDetectionHorizontal;
             if #available(iOS 11.3, *) {
                 let videoFormatCount = ARWorldTrackingConfiguration.supportedVideoFormats.count
                 if videoFormatCount > 0 {
@@ -70,11 +75,24 @@ import SceneKit
             _configuration!.worldAlignment = ARConfiguration.WorldAlignment.gravity
             _configuration!.providesAudioData = false
 
+            _configuration!.planeDetection = [.horizontal, .vertical]
+
             return _configuration
         }
 
         return _configuration
     }
+
+    func enablePlaneDetection() {
+        configuration?.planeDetection = [.horizontal, .vertical]
+        reset()
+    }
+
+    func disablePlaneDetection() {
+        configuration?.planeDetection = []
+        reset()
+    }
+
 
     //MARK: RCTARView Observable
     fileprivate(set) var observers: [WeakReference<RCTARViewObserving>] = []

@@ -19,7 +19,7 @@ import SceneKit
 import ARKit
 
 @objc open class UiNodesManager: NSObject {
-    @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
+    @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil, planeDetector: PlaneDetector())
     @objc public private (set) var rootNode: TransformNode
     
     var onInputFocused: ((_ input: DataProviding) -> (Void))?
@@ -30,19 +30,24 @@ import ARKit
     fileprivate var focusedNode: UiNode?
     fileprivate var longPressedNode: UiNode?
     fileprivate(set) var nodeSelector: UiNodeSelector!
+    fileprivate weak var ARView: RCTARView?
+    fileprivate let planeDetector: PlaneDetector!
     var dialogPresenter: DialogPresenting?
-    
-    init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
+
+    init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?, planeDetector: PlaneDetector) {
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.nodeByAnchorUuid = nodeByAnchorUuid
         self.focusedNode = focusedNode
+        self.planeDetector = planeDetector
     }
 
     @objc public func registerARView(_ arView: RCTARView) {
+        ARView = arView
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
-        nodeSelector = UiNodeSelector(rootNode)
+        arView.register(planeDetector)
+        nodeSelector = UiNodeSelector(rootNode, { return self.nodesById.compactMap { if $0.key.contains("planeNode_") { return $0.value } else { return nil } } })
     }
     
     @objc public func handleTapAction(ray: Ray?) {
@@ -82,6 +87,26 @@ import ARKit
         }
         if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
+        }
+
+        if let planeNode = focusedNode as? PlaneNode {
+            positionRootNode(planeNode)
+            ARView?.disablePlaneDetection()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(250)) { [weak self] in
+                self?.nodesById.forEach {
+                    if $0.key.contains("planeNode_") {
+                        $0.value.parent?.removeFromParentNode()
+                        self?.nodesById.removeValue(forKey: $0.key)
+                    }
+                }
+            }
+        }
+    }
+
+    func positionRootNode(_ plane: PlaneNode) {
+        if let position = plane.parent?.position {
+            rootNode.position = position
+            rootNode.layoutIfNeeded()
         }
     }
     
