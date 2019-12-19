@@ -18,24 +18,21 @@ import Foundation
 import UIKit
 import SceneKit
 
-@objc class LongPressGestureRecognizer: UIGestureRecognizer {
+@objc class DragGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: NodeSelecting
-    fileprivate(set) var longPressedNode: TransformNode?
-    fileprivate(set) var initialTouchLocation: CGPoint?
+    fileprivate var initialRay: Ray?
     fileprivate var rayBuilder: RayBuilding
-    fileprivate var longpressTimer: Timer?
-
+    fileprivate(set) var dragNode: Dragging?
+    fileprivate var beginPoint: SCNVector3 = SCNVector3Zero
+    fileprivate(set) var dragAxis: Ray?
+    fileprivate(set) var beginDragValue: CGFloat = 0
+    fileprivate(set) var dragDelta: CGFloat = 0
     var getCameraNode: (() -> SCNNode?)?
-    var minimumPressDuration: TimeInterval = 0.5
 
-    init(nodeSelector: NodeSelecting, rayBuilder: RayBuilding, target: Any?, action: Selector?) {
+    init(nodeSelector: NodeSelecting, rayBuilder: RayBuilding,  target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         self.rayBuilder = rayBuilder
         super.init(target: target, action: action)
-    }
-
-    deinit {
-        longpressTimer?.invalidate()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -43,23 +40,25 @@ import SceneKit
             state = .failed
         }
 
+        // Capture the first touch and store some information about it.
         if state == .possible,
             let cameraNode = getCameraNode?(),
-            let firstTouch = touches.first,
-            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
-            longPressedNode = nodeSelector.hitTest(ray: ray)
-            initialTouchLocation = firstTouch.location(in: firstTouch.view)
-
-            longpressTimer?.invalidate()
-            longpressTimer = Timer.scheduledTimer(withTimeInterval: minimumPressDuration, repeats: false) { [weak self] _ in
-                self?.longpressTimer = nil
-                self?.state = .began
-            }
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
+            let node = nodeSelector.draggingHitTest(ray: ray),
+            let axis = node.dragAxis,
+            let point = axis.getClosestPointTo(ray: ray) {
+            initialRay = ray
+            dragNode = node
+            dragAxis = axis
+            beginPoint = point
+            beginDragValue = node.dragValue
+            dragDelta = 0
+            state = .began
         } else {
             state = .failed
         }
 
-        if longPressedNode != nil {
+        if dragNode != nil {
             ignoreAllTouchesButFirst(touches, with: event)
         }
 
@@ -67,44 +66,43 @@ import SceneKit
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
-        if let firstTouch = touches.first,
-            let initialTouchLocation = initialTouchLocation {
-            let currentLocation = firstTouch.location(in: firstTouch.view)
-            let delta = (currentLocation - initialTouchLocation)
-            let distanceSq = delta.x * delta.x + delta.y + delta.y
-            if distanceSq > 400 {
-                state = .failed
-            }
-        } else {
-            state = .failed
+        if let cameraNode = getCameraNode?(),
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
+            let dragRange = dragNode?.dragRange, dragRange > 0 {
+            let delta = calculateDelta(for: ray)
+            dragDelta = delta / dragRange
         }
 
+        state = .changed
         super.touchesMoved(touches, with: event)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        longpressTimer?.invalidate()
-        longpressTimer = nil
-        longPressedNode = nil
-        initialTouchLocation = nil
-        state = (state == .began) ? .ended : .failed
+        state = .ended
         super.touchesEnded(touches, with: event)
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        longpressTimer?.invalidate()
-        longpressTimer = nil
         state = .cancelled
         super.touchesCancelled(touches, with: event)
     }
 
     override func reset() {
-        longpressTimer?.invalidate()
-        longpressTimer = nil
-        longPressedNode = nil
-        initialTouchLocation = nil
+        initialRay = nil
+        dragNode = nil
+        dragAxis = nil
+        beginPoint = SCNVector3Zero
+        beginDragValue = 0
+        dragDelta = 0
         super.reset()
     }
+
+    fileprivate func calculateDelta(for ray: Ray) -> CGFloat {
+        guard let dragAxis = dragAxis,
+            let point = dragAxis.getClosestPointTo(ray: ray) else { return 0 }
+
+        let dir = (point - beginPoint).normalized()
+        let sign: CGFloat = (dir.dot(dragAxis.direction) >= 0) ? 1 : -1
+        return CGFloat(point.distance(beginPoint)) * sign
+    }
 }
-
-
