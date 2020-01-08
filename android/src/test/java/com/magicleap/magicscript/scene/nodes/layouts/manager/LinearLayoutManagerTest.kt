@@ -16,15 +16,15 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.math.Vector3
-import com.nhaarman.mockitokotlin2.mock
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
+import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.measureChildren
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.*
+import com.magicleap.magicscript.utils.Vector2
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,36 +32,96 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class LinearLayoutManagerTest {
-
-    private lateinit var linearLayout: UiLinearLayout
     private lateinit var linearManager: LinearLayoutManager
+    private lateinit var verticalManager: VerticalLinearLayoutManager<LayoutParams>
+    private lateinit var horizontalManager: HorizontalLinearLayoutManager<LayoutParams>
+
+    private lateinit var childrenList: List<TransformNode>
+    // <child index, bounding>
+    private val childrenBounds = mutableMapOf<Int, Bounding>()
+
+    // Layout params
+    private var orientation: String = ORIENTATION_VERTICAL
+    private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+    private var itemPadding = Padding(0f, 0f, 0f, 0f)
+    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
+    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
 
     @Before
     fun setUp() {
-        this.linearLayout = mock()
-        this.linearManager = LinearLayoutManagerImpl()
-        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.TOP
-        linearManager.itemPadding = Padding(1F, 1F, 1F, 1F)
+        this.verticalManager = mock()
+        this.horizontalManager = mock()
+        this.linearManager = LinearLayoutManager(verticalManager, horizontalManager)
+
+        childrenList = listOf(
+            NodeBuilder()
+                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withAlignment("center-center")
+                .build(),
+            NodeBuilder()
+                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withAlignment("center-center")
+                .build()
+        )
+
+        measureChildren(childrenList, childrenBounds)
     }
 
     @Test
-    fun `should work for empty children list`() {
-        val children: List<Node> = emptyList()
+    fun `should layout using vertical manager when orientation is vertical`() {
+        orientation = ORIENTATION_VERTICAL
+        val params = getLayoutParams()
 
-        linearManager.layoutChildren(children, mapOf())
+        linearManager.layoutChildren(params, childrenList, childrenBounds)
 
-        assertTrue(children.isEmpty())
+        verify(verticalManager, atLeastOnce()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
     }
 
     @Test
-    fun `should position child node`() {
-        val children: List<Node> = listOf(Node())
-        val bound = Bounding(0F, 0F, 1F, 1F)
-        val bounds: Map<Int, Bounding> = mapOf(0 to bound, 1 to bound)
+    fun `should layout using horizontal manager when orientation is horizontal`() {
+        orientation = ORIENTATION_HORIZONTAL
+        val params = getLayoutParams()
 
-        linearManager.layoutChildren(children, bounds)
+        linearManager.layoutChildren(params, childrenList, childrenBounds)
 
-        assertNotEquals(Vector3(0F, 0F, 0F), children.get(0).localPosition)
+        verify(horizontalManager, atLeastOnce()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
     }
+
+    @Test
+    fun `should not interact with horizontal manager when orientation is vertical`() {
+        orientation = ORIENTATION_VERTICAL
+        val params = getLayoutParams()
+
+        linearManager.layoutChildren(params, childrenList, childrenBounds)
+        linearManager.getLayoutBounds(params)
+
+        verify(horizontalManager, never()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
+        verify(horizontalManager, never()).getContentWidth(any(), any())
+        verify(horizontalManager, never()).getContentHeight(any(), any())
+        verify(horizontalManager, never()).getLayoutBounds(any())
+    }
+
+    @Test
+    fun `should not interact with vertical manager when orientation is horizontal`() {
+        orientation = ORIENTATION_HORIZONTAL
+        val params = getLayoutParams()
+
+        linearManager.layoutChildren(params, childrenList, childrenBounds)
+        linearManager.getLayoutBounds(params)
+
+        verify(verticalManager, never()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
+        verify(verticalManager, never()).getContentWidth(any(), any())
+        verify(verticalManager, never()).getContentHeight(any(), any())
+        verify(verticalManager, never()).getLayoutBounds(any())
+    }
+
+    private fun getLayoutParams() =
+        LinearLayoutParams(
+            size = size,
+            itemPadding = itemPadding,
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment,
+            orientation = orientation
+        )
+
 }
