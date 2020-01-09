@@ -93,6 +93,7 @@ import SceneKit
         reset()
     }
 
+    fileprivate let gestureHandler: GestureHandling
 
     //MARK: RCTARView Observable
     fileprivate(set) var observers: [WeakReference<RCTARViewObserving>] = []
@@ -108,6 +109,7 @@ import SceneKit
     }
 
     public init() {
+        self.gestureHandler = GestureHandler()
         super.init(frame: CGRect.zero)
         self.arView = createARView()
         setupNodesManager(self.arView)
@@ -171,18 +173,29 @@ import SceneKit
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
+        let rayBuilder = RayBuilder()
+
         // Add tap gesture
-        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleTapAction(_:)))
+        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+                                                        rayBuilder: rayBuilder,
+                                                        target: gestureHandler,
+                                                        action: #selector(GestureHandling.handleTapAction(_:)))
         tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
-        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleDragAction(_:)))
+        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+                                                          rayBuilder: rayBuilder,
+                                                          target: gestureHandler,
+                                                          action: #selector(GestureHandling.handleDragAction(_:)))
         dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(dragGestureRecognizer)
 
         // Add long press gesture
-        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleLongPressAction(_:)))
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+                                                                     rayBuilder: rayBuilder,
+                                                                     target: gestureHandler,
+                                                                     action: #selector(GestureHandling.handleLongPressAction(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
     }
@@ -233,39 +246,5 @@ import SceneKit
         if let configuration = self.configuration {
             arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
-    }
-}
-
-// MARK: - Event handlers
-extension RCTARView {
-    @objc fileprivate func handleTapAction(_ sender: TapGestureRecognizer) {
-        if sender.state == .ended {
-            UiNodesManager.instance.handleNodeTap(sender.tappedNode)
-            #if targetEnvironment(simulator)
-            guard let cameraNode = cameraNode,
-                let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
-
-            if debug && rayCastNode == nil {
-                rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
-                scene.rootNode.addChildNode(rayCastNode!)
-            }
-
-            if let node = rayCastNode {
-                node.position = ray.begin
-                node.orientUpVectorAlong(ray.direction)
-                node.scale = SCNVector3(1, ray.length, 1)
-            }
-            #endif
-        }
-    }
-
-    @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
-        if sender.state == UIGestureRecognizer.State.changed {
-            sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
-        }
-    }
-
-    @objc fileprivate func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
-        UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

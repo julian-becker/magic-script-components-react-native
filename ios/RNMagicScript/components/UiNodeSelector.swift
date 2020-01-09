@@ -34,7 +34,8 @@ class UiNodeSelector: NodeSelecting  {
     }
 
     func hitTest(ray: Ray) -> TransformNode? {
-        let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
+        var topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
+        topNodes.append(contentsOf: planeNodes())
         var hitNodes: [TransformNode] = []
 
         for node in topNodes {

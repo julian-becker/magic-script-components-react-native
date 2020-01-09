@@ -47,7 +47,7 @@ import ARKit
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
         arView.register(planeDetector)
-        nodeSelector = UiNodeSelector(rootNode, { return self.nodesById.compactMap { if $0.key.contains("planeNode_") { return $0.value } else { return nil } } })
+        nodeSelector = UiNodeSelector(rootNode, { return self.planeDetector.detectedPlanes })
     }
     
     @objc public func handleNodeTap(_ node: TransformNode?) {

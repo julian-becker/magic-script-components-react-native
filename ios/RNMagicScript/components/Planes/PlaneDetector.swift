@@ -20,19 +20,33 @@ import SceneKit
 
 class PlaneDetector: NSObject, RCTARViewObserving {
 
+    fileprivate var planes: [PlaneNode] = []
+    var detectedPlanes: [TransformNode] {
+        return planes.map { $0 as TransformNode }
+    }
+
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        print(#function)
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
         let planeNode = PlaneNode(planeAnchor: planeAnchor)
-        let planeNodeId = randomIdentifier(length: 8)
-        UiNodesManager.instance.registerNode(planeNode, nodeId: planeNodeId)
+        planes.append(planeNode)
         node.addChildNode(planeNode)
     }
 
+    func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
+        print(#function)
+    }
+
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        print(#function)
         guard let planeAnchor = anchor as? ARPlaneAnchor,
             let planeNode = node.childNodes.first as? PlaneNode
             else { return }
 
         planeNode.updateWith(planeAnchor: planeAnchor)
+    }
+
+    func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        print(#function)
     }
 }
