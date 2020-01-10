@@ -15,7 +15,46 @@
 // 
 
 #import "ARPlaneDetector.h"
+#import "ARPlaneDetectorEvents.h"
+#import "RNMagicScript-Swift.h"
+
+@interface ARPlaneDetector ()
+@end
 
 @implementation ARPlaneDetector
+
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
+- (dispatch_queue_t)methodQueue {
+    return dispatch_get_main_queue();
+}
+
+RCT_EXPORT_MODULE();
+
+RCT_EXPORT_METHOD(addOnPlaneDetectedEventHandler) {
+    PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender) {
+        NSLog(@"addOnPlaneDetectedEventHandler");
+        [[ARPlaneDetectorEvents instance] onPlaneDetectedEventReceived:sender];
+    };
+}
+
+RCT_EXPORT_METHOD(addOnPlaneTappedEventHandler) {
+    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender) {
+        NSLog(@"addOnPlaneTappedEventHandler");
+        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender];
+    };
+}
+
+RCT_EXPORT_METHOD(startPlaneDetection) {
+    NSLog(@"startPlaneDetection");
+    [[PlaneDetector instance] enablePlaneDetection];
+}
+
+RCT_EXPORT_METHOD(stopPlaneDetection) {
+    NSLog(@"stopPlaneDetection");
+    [[PlaneDetector instance] disablePlaneDetection];
+}
 
 @end

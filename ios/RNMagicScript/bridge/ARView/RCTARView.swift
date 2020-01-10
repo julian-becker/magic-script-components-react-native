@@ -83,12 +83,12 @@ import SceneKit
         return _configuration
     }
 
-    func enablePlaneDetection() {
+    fileprivate func enablePlaneDetection() {
         configuration?.planeDetection = [.horizontal, .vertical]
         reset()
     }
 
-    func disablePlaneDetection() {
+    fileprivate func disablePlaneDetection() {
         configuration?.planeDetection = []
         reset()
     }
@@ -114,6 +114,8 @@ import SceneKit
         self.arView = createARView()
         setupNodesManager(self.arView)
         setupGestureRecognizers(self.arView)
+        _ = PlaneDetector(arView: self)
+        register(PlaneDetector.instance)
         RCTARView.instance = self
         resume()
     }
@@ -179,7 +181,7 @@ import SceneKit
         let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
                                                         rayBuilder: rayBuilder,
                                                         target: gestureHandler,
-                                                        action: #selector(GestureHandling.handleTapAction(_:)))
+                                                        action: #selector(GestureHandling.handleTapGesture(_:)))
         tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(tapGestureRecognizer)
 
@@ -187,7 +189,7 @@ import SceneKit
         let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
                                                           rayBuilder: rayBuilder,
                                                           target: gestureHandler,
-                                                          action: #selector(GestureHandling.handleDragAction(_:)))
+                                                          action: #selector(GestureHandling.handleDragGesture(_:)))
         dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(dragGestureRecognizer)
 
@@ -195,7 +197,7 @@ import SceneKit
         let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
                                                                      rayBuilder: rayBuilder,
                                                                      target: gestureHandler,
-                                                                     action: #selector(GestureHandling.handleLongPressAction(_:)))
+                                                                     action: #selector(GestureHandling.handleLongPressGesture(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
     }

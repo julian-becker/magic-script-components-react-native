@@ -303,6 +303,7 @@
 		C450CD5C23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */; };
 		C450CD5E23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450CD5D23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift */; };
 		C450CD5F23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450CD5D23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift */; };
+		C452BC5C23C8A03B0007CDE7 /* ARPlaneDetectorEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C452BC5B23C8A03B0007CDE7 /* ARPlaneDetectorEvents.m */; };
 		C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7A237420BB000E88C1 /* UiListViewNode.swift */; };
 		C4596A7C237420BB000E88C1 /* UiListViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7A237420BB000E88C1 /* UiListViewNode.swift */; };
 		C4596A7E237420CA000E88C1 /* UiListViewItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */; };
@@ -767,6 +768,8 @@
 		C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownListItemTapHandling.swift; sourceTree = "<group>"; };
 		C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizer.swift; sourceTree = "<group>"; };
 		C450CD5D23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressGestureRecognizer.swift; sourceTree = "<group>"; };
+		C452BC5A23C8A03B0007CDE7 /* ARPlaneDetectorEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARPlaneDetectorEvents.h; sourceTree = "<group>"; };
+		C452BC5B23C8A03B0007CDE7 /* ARPlaneDetectorEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARPlaneDetectorEvents.m; sourceTree = "<group>"; };
 		C4596A7A237420BB000E88C1 /* UiListViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewNode.swift; sourceTree = "<group>"; };
 		C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewItemNode.swift; sourceTree = "<group>"; };
 		C4596A82237421A4000E88C1 /* UiListViewNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewNodeSpec.swift; sourceTree = "<group>"; };
@@ -1304,6 +1307,8 @@
 				44AFAC30232B9BCF005AC8EF /* RCTConvert+Components.m */,
 				C46014AD23C71F6E002A63D4 /* ARPlaneDetector.h */,
 				C46014AE23C71F6E002A63D4 /* ARPlaneDetector.m */,
+				C452BC5A23C8A03B0007CDE7 /* ARPlaneDetectorEvents.h */,
+				C452BC5B23C8A03B0007CDE7 /* ARPlaneDetectorEvents.m */,
 			);
 			path = bridge;
 			sourceTree = "<group>";
@@ -2368,6 +2373,7 @@
 				44AFAC40232B9BCF005AC8EF /* UiImageNode.swift in Sources */,
 				44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4FEFF862398E87B00EA1663 /* RCTARViewObserving.swift in Sources */,
+				C452BC5C23C8A03B0007CDE7 /* ARPlaneDetectorEvents.m in Sources */,
 				C4809BB2234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44AFAC3D232B9BCF005AC8EF /* UiTextNode.swift in Sources */,
 				C4A12B232361BA06009B7083 /* ColorPickerInputView.swift in Sources */,

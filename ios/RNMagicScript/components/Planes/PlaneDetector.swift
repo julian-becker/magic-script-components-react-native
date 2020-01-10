@@ -18,34 +18,68 @@ import UIKit
 import ARKit
 import SceneKit
 
-class PlaneDetector: NSObject, RCTARViewObserving {
-
+@objc open class PlaneDetector: NSObject, RCTARViewObserving {
+    @objc public static var instance: PlaneDetector!
+    
     fileprivate var planes: [PlaneNode] = []
+    fileprivate weak var arView: RCTARView?
+
+    init(arView: RCTARView) {
+        self.arView = arView
+        super.init()
+        PlaneDetector.instance = self
+
+        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { timer in
+            self.onPlaneDetected?(self)
+        }
+
+        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { timer in
+            self.onPlaneTapped?(self)
+        }
+
+    }
+
     var detectedPlanes: [TransformNode] {
         return planes.map { $0 as TransformNode }
     }
 
+    @objc public func enablePlaneDetection() {
+        self.arView?.planeDetection = true
+    }
+
+    @objc public func disablePlaneDetection() {
+        self.arView?.planeDetection = false
+    }
+
+    func handleNodeTap(_ node: PlaneNode) {
+        print(#function)
+    }
+    
+    @objc public var onPlaneDetected: ((_ sender: PlaneDetector) -> Void)?
+    @objc public var onPlaneTapped: ((_ sender: PlaneDetector) -> Void)?
+    
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         print(#function)
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        let planeNode = PlaneNode(planeAnchor: planeAnchor)
+        let planeNode = PlaneNode(props: [:])
+        planeNode.updateWith(planeAnchor: planeAnchor)
         planes.append(planeNode)
         node.addChildNode(planeNode)
     }
-
+    
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
         print(#function)
     }
-
+    
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         print(#function)
         guard let planeAnchor = anchor as? ARPlaneAnchor,
             let planeNode = node.childNodes.first as? PlaneNode
             else { return }
-
+        
         planeNode.updateWith(planeAnchor: planeAnchor)
     }
-
+    
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
         print(#function)
     }

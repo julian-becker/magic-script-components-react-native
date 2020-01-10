@@ -15,10 +15,17 @@
 // 
 
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ARPlaneDetector : NSObject <RCTBridgeModule>
+@class PlaneDetector;
+
+@interface ARPlaneDetectorEvents : RCTEventEmitter <RCTBridgeModule>
++ (instancetype)instance;
+
+- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender;
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender;
 @end
 
 NS_ASSUME_NONNULL_END

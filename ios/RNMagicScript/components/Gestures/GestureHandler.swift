@@ -19,25 +19,30 @@ import UIKit
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
 @objc protocol GestureHandling {
-    func handleTapAction(_ sender: TapGestureRecognizer)
-    func handleDragAction(_ sender: DragGestureRecognizer)
-    func handleLongPressAction(_ sender: LongPressGestureRecognizer)
+    func handleTapGesture(_ sender: TapGestureRecognizer)
+    func handleDragGesture(_ sender: DragGestureRecognizer)
+    func handleLongPressGesture(_ sender: LongPressGestureRecognizer)
 }
 
 class GestureHandler: GestureHandling {
-    @objc func handleTapAction(_ sender: TapGestureRecognizer) {
+    @objc func handleTapGesture(_ sender: TapGestureRecognizer) {
+        if let planeNode = sender.tappedNode as? PlaneNode {
+            PlaneDetector.instance.handleNodeTap(planeNode)
+            return
+        }
+
         if sender.state == .ended {
             UiNodesManager.instance.handleNodeTap(sender.tappedNode)
         }
     }
 
-    @objc func handleDragAction(_ sender: DragGestureRecognizer) {
+    @objc func handleDragGesture(_ sender: DragGestureRecognizer) {
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
     }
 
-    @objc func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
+    @objc func handleLongPressGesture(_ sender: LongPressGestureRecognizer) {
         UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

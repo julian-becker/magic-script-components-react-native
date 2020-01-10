@@ -19,55 +19,39 @@ import ARKit
 import SceneKit
 
 class PlaneNode: UiNode {
-    init(planeAnchor: ARPlaneAnchor) {
-        super.init()
-
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-        let plane = SCNPlane(width: width, height: height)
-
-        plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
-
-        let planeNode = SCNNode(geometry: plane)
-
-        let x = CGFloat(planeAnchor.center.x)
-        let y = CGFloat(planeAnchor.center.y)
-        let z = CGFloat(planeAnchor.center.z)
-        planeNode.position = SCNVector3(x,y,z)
-        planeNode.eulerAngles.x = -.pi / 2
-
-        addChildNode(planeNode)
-    }
-
     func updateWith(planeAnchor: ARPlaneAnchor) {
-        guard let planeNode = childNodes.first,
-            let plane = planeNode.geometry as? SCNPlane else { return }
+        if let planeNode = childNodes.first, let plane = planeNode.geometry as? SCNPlane {
 
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-        plane.width = width
-        plane.height = height
+            let width = CGFloat(planeAnchor.extent.x)
+            let height = CGFloat(planeAnchor.extent.z)
+            plane.width = width
+            plane.height = height
 
-        let x = CGFloat(planeAnchor.center.x)
-        let y = CGFloat(planeAnchor.center.y)
-        let z = CGFloat(planeAnchor.center.z)
-        planeNode.position = SCNVector3(x, y, z)
-    }
+            let x = CGFloat(planeAnchor.center.x)
+            let y = CGFloat(planeAnchor.center.y)
+            let z = CGFloat(planeAnchor.center.z)
+            planeNode.position = SCNVector3(x, y, z)
+        } else {
 
-    @objc public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+            let width = CGFloat(planeAnchor.extent.x)
+            let height = CGFloat(planeAnchor.extent.z)
+            let plane = SCNPlane(width: width, height: height)
 
-    @objc public required init(props: [String : Any]) {
-        fatalError("init(props:) has not been implemented")
+            plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
+
+            let planeNode = SCNNode(geometry: plane)
+
+            let x = CGFloat(planeAnchor.center.x)
+            let y = CGFloat(planeAnchor.center.y)
+            let z = CGFloat(planeAnchor.center.z)
+            planeNode.position = SCNVector3(x,y,z)
+            planeNode.eulerAngles.x = -.pi / 2
+
+            addChildNode(planeNode)
+        }
     }
 
     override func hitTest(ray: Ray) -> TransformNode? {
         return self
     }
-}
-
-func randomIdentifier(length: Int) -> String {
-    let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    return "planeNode_" + String((0..<length).map{ _ in letters.randomElement()! })
 }
