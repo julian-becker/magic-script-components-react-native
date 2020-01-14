@@ -34,15 +34,15 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(addOnPlaneDetectedEventHandler) {
+    NSLog(@"addOnPlaneDetectedEventHandler");
     PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender) {
-        NSLog(@"addOnPlaneDetectedEventHandler");
         [[ARPlaneDetectorEvents instance] onPlaneDetectedEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(addOnPlaneTappedEventHandler) {
+    NSLog(@"addOnPlaneTappedEventHandler");
     PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender) {
-        NSLog(@"addOnPlaneTappedEventHandler");
         [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender];
     };
 }

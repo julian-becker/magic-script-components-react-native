@@ -19,27 +19,16 @@ import ARKit
 import SceneKit
 
 @objc open class PlaneDetector: NSObject, RCTARViewObserving {
-    @objc public static var instance: PlaneDetector!
+    @objc public static var instance: PlaneDetector = PlaneDetector()
     
     fileprivate var planes: [PlaneNode] = []
     fileprivate weak var arView: RCTARView?
 
-    init(arView: RCTARView) {
+    @objc public func register(arView: RCTARView) {
         self.arView = arView
-        super.init()
-        PlaneDetector.instance = self
-
-        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { timer in
-            self.onPlaneDetected?(self)
-        }
-
-        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { timer in
-            self.onPlaneTapped?(self)
-        }
-
     }
 
-    var detectedPlanes: [TransformNode] {
+    @objc public var detectedPlanes: [TransformNode] {
         return planes.map { $0 as TransformNode }
     }
 
@@ -52,19 +41,23 @@ import SceneKit
     }
 
     func handleNodeTap(_ node: PlaneNode) {
-        print(#function)
+//        print(#function)
+        self.onPlaneTapped?(self)
     }
     
     @objc public var onPlaneDetected: ((_ sender: PlaneDetector) -> Void)?
     @objc public var onPlaneTapped: ((_ sender: PlaneDetector) -> Void)?
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        print(#function)
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        let planeNode = PlaneNode(props: [:])
-        planeNode.updateWith(planeAnchor: planeAnchor)
+        let planeNode = PlaneNode()
+        planeNode.setupWith(planeAnchor: planeAnchor)
+        planeNode.updateLayout()
         planes.append(planeNode)
         node.addChildNode(planeNode)
+
+        // notify JSX layer
+        self.onPlaneDetected?(self)
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -78,9 +71,16 @@ import SceneKit
             else { return }
         
         planeNode.updateWith(planeAnchor: planeAnchor)
+
+        // notify JSX layer
+        self.onPlaneDetected?(self)
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
         print(#function)
+        guard let _ = anchor as? ARPlaneAnchor,
+            let planeNode = node.childNodes.first as? PlaneNode
+            else { return }
+        planes.removeAll { $0 == planeNode }
     }
 }

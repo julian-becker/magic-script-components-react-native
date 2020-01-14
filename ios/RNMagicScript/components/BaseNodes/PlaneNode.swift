@@ -19,39 +19,41 @@ import ARKit
 import SceneKit
 
 class PlaneNode: UiNode {
+    func setupWith(planeAnchor: ARPlaneAnchor) {
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        let plane = SCNPlane(width: width, height: height)
+
+        plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
+
+        let planeNode = SCNNode(geometry: plane)
+
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+        planeNode.position = SCNVector3(x,y,z)
+        planeNode.eulerAngles.x = -.pi / 2
+
+        addChildNode(planeNode)
+    }
+
     func updateWith(planeAnchor: ARPlaneAnchor) {
-        if let planeNode = childNodes.first, let plane = planeNode.geometry as? SCNPlane {
+        guard let planeNode = childNodes.first,
+            let plane = planeNode.geometry as? SCNPlane else { return }
 
-            let width = CGFloat(planeAnchor.extent.x)
-            let height = CGFloat(planeAnchor.extent.z)
-            plane.width = width
-            plane.height = height
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        plane.width = width
+        plane.height = height
 
-            let x = CGFloat(planeAnchor.center.x)
-            let y = CGFloat(planeAnchor.center.y)
-            let z = CGFloat(planeAnchor.center.z)
-            planeNode.position = SCNVector3(x, y, z)
-        } else {
-
-            let width = CGFloat(planeAnchor.extent.x)
-            let height = CGFloat(planeAnchor.extent.z)
-            let plane = SCNPlane(width: width, height: height)
-
-            plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
-
-            let planeNode = SCNNode(geometry: plane)
-
-            let x = CGFloat(planeAnchor.center.x)
-            let y = CGFloat(planeAnchor.center.y)
-            let z = CGFloat(planeAnchor.center.z)
-            planeNode.position = SCNVector3(x,y,z)
-            planeNode.eulerAngles.x = -.pi / 2
-
-            addChildNode(planeNode)
-        }
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+        planeNode.position = SCNVector3(x, y, z)
     }
 
     override func hitTest(ray: Ray) -> TransformNode? {
         return self
     }
 }
+

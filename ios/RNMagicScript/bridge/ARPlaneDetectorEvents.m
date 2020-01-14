@@ -75,7 +75,15 @@ RCT_EXPORT_MODULE();
 
 
 - (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender {
-    [self onEventWithName:@"onPlaneDetected" sender:sender body:NULL];
+    NSMutableArray<NSArray<NSNumber *> *> *localPositions = [NSMutableArray new];
+    for (TransformNode *plane in sender.detectedPlanes) {
+        if ([plane.childNodes firstObject]) {
+            SCNNode *innerPlane = [plane.childNodes firstObject];
+            NSLog(@"%@", @[@(innerPlane.position.x), @(innerPlane.position.y), @(innerPlane.position.z)]);
+            [localPositions addObject:@[@(innerPlane.position.x), @(innerPlane.position.y), @(innerPlane.position.z)]];
+        }
+    }
+    [self onEventWithName:@"onPlaneDetected" sender:sender body:@{ @"detectedPlanes": localPositions }];
 }
 
 - (void)onPlaneTappedEventReceived:(PlaneDetector *)sender {

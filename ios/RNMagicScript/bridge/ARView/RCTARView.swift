@@ -114,7 +114,7 @@ import SceneKit
         self.arView = createARView()
         setupNodesManager(self.arView)
         setupGestureRecognizers(self.arView)
-        _ = PlaneDetector(arView: self)
+        PlaneDetector.instance.register(arView: self)
         register(PlaneDetector.instance)
         RCTARView.instance = self
         resume()
