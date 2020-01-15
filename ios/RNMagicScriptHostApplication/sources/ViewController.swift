@@ -43,10 +43,8 @@ class ViewController: UIViewController {
 
     let groupId: String = "group"
     fileprivate func setupScene() {
-        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-        setupButton()
-        setupCircleConfirmation()
-        setupScrollView()
+        let _: UiGroupNode = createComponent(["debug": true, "localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+        setupDropdownListTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -74,106 +72,37 @@ class ViewController: UIViewController {
         ])
     }
 
-    fileprivate let rectSize = CGSize(width: 0.4, height: 0.2)
-    fileprivate var rectScale: CGFloat = 1.0
-    fileprivate var rectLayout: UiRectLayoutNode!
-    fileprivate func setupButton() {
-        let button: UiButtonNode = createComponent([
-            "enabled": true,
-            "roundness": 0.5,
-            "text": "Button",
-            "textColor": [0,1,0,1],
-            "textSize": 0.08,
-            "width": rectSize.width,
-            "height": rectSize.height,
-            "localPosition": [0, 1.0, 0]
-        ], nodeId: "button_id", parentId: groupId)
-
-        button.onActivate = {
-            print($0)
-        }
-    }
-
-    fileprivate func setupSlider() {
-        let slider: UiSliderNode = createComponent([
-            "localPosition": [0, 0.1, 0],
-            "value": rectScale,
-            "min": 0.3,
-            "max": 2.0,
-            "width": 1.0,
-            "height": 0.06,
-        ], nodeId: "slider_id", parentId: groupId)
-
-        slider.onSliderChanged = { [weak self] sender, value in
-            self?.rectScale = value
-            self?.updateRectLayout()
-        }
-    }
-
-    fileprivate func setupCircleConfirmation() {
-        let _: UiCircleConfirmationNode = createComponent([
+    fileprivate func setupDropdownListTest() {
+        // Rect layout
+        let dropdownListId: String = "dropdown_list_id"
+        let dropdown: UiDropdownListNode = createComponent([
+            "alignment": "top-center",
+            "debug": true,
             "localPosition": [0, 0.7, 0],
-            "radius": rectSize.height / 2
-        ], nodeId: "circleConfirmation_id", parentId: groupId)
-    }
+            "text": "DropDownList",
+//            "textSize": 0.015,
+            "multiSelectMode": true,
+//            "maxCharacterLimit": 4
+        ], nodeId: dropdownListId, parentId: groupId)
 
-    fileprivate func setupScrollView() {
-        let size = CGSize(width: 1.0, height: 1.25)
-        let scrollViewId = "scroll_view_id"
-        let scrollView: UiScrollViewNode = createComponent([
-            "localPosition": [0, -0.1, 0],
-            "scrollBarVisibility": "always",
-            "scrollBounds": [
-                "min": [-0.5 * size.width, -0.5 * size.height, -0.1],
-                "max": [0.5 * size.width, 0.5 * size.height, 0.1]
-            ],
-            "scrollDirection": "vertical"
-        ], nodeId: scrollViewId, parentId: groupId)
-        scrollView.onScrollChanged = { node, value in
-            print("scroll: \(value)")
+        for i in 0..<10 {
+            let _: UiDropdownListItemNode = createComponent([
+                "id": i,
+                "label": "item \(i + 1)",
+                "selected": i % 2 == 0
+            ], nodeId: "item_\(i)", parentId: dropdownListId)
         }
 
-
-        let barLength: CGFloat = size.height
-        let barThickness: CGFloat = 0.04
-        let _: UiScrollBarNode = createComponent([
-            "localPosition": [0.5 * (size.width + barThickness), 0, 0],
-            "orientation": "vertical",
-            "width": barLength,
-            "height": barThickness
-        ], nodeId: "scroll_bar_id", parentId: scrollViewId)
-
-        let linearLayoutId = "linear_layout_id"
-        let _: UiLinearLayoutNode = createComponent([
-            "alignment": "center-center",
-            "defaultItemAlignment": "center-center",
-            "orientation": "vertical"
-        ], nodeId: linearLayoutId, parentId: scrollViewId)
-
-        let colors = [
-            [1,1,0.5,1],
-            [1,0.5,1,1],
-            [0.5,1,1,1],
-            [1,0.5,0.5,1],
-            [0.5,0.5,1,1],
-            [0.5,1,0.5,1],
-            [0.75,0.75,0.75,1],
-            [1,1,1,1]
-        ]
-        for (index, color) in colors.enumerated() {
-            let imageId = "image_\(index)"
-            let _: UiImageNode = createComponent([
-                "width": size.width,
-                "height": size.width,
-                "color": color
-            ], nodeId: imageId, parentId: linearLayoutId)
+        let toggle: UiToggleNode = createComponent([
+            "localPosition": [0, -0.4, 0],
+            "text": "multiSelectMode",
+            "textSize": 0.08,
+            "height": 0.1,
+            "debug": true
+        ], nodeId: "toggle_id", parentId: groupId)
+        toggle.onChanged = { sender, on in
+            dropdown.multiSelectMode = on
         }
-    }
-
-    fileprivate func updateRectLayout() {
-        rectLayout.width = rectScale * rectSize.width
-        rectLayout.height = rectScale * rectSize.height
-        rectLayout.layoutIfNeeded()
     }
 
     @discardableResult
