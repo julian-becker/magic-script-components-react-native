@@ -1,16 +1,10 @@
-import React from 'react';
 import { NativeModules, NativeEventEmitter } from "react-native";
 
-export default class PlaneDetector extends React.Component {
-    constructor(props) {
-        super(props);
+export default class PlaneDetector {
+    constructor() {
         console.log("PlaneDetector constructor()");
         this.arPlaneDetector = NativeModules.ARPlaneDetector;
         this.arPlaneDetectorEventManager = new NativeEventEmitter(NativeModules.ARPlaneDetectorEvents);
-    }
-
-    foo() {
-        console.log("PlaneDetector foo");
     }
 
     addOnPlaneDetectedObserver(observerCallback) {
@@ -21,9 +15,5 @@ export default class PlaneDetector extends React.Component {
     addOnPlaneTappedObserver(observerCallback) {
         this.arPlaneDetectorEventManager.addListener("onPlaneTapped", observerCallback);
         this.arPlaneDetector.addOnPlaneTappedEventHandler();
-    }
-
-    render() {
-        return null
     }
 }

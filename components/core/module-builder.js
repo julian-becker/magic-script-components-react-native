@@ -1,5 +1,7 @@
+import PlaneDetector from '../platform/planes-detector.js';
+
 export default class ModuleBuilder {
     create(componentType, configuration) {
-        console.log("ModuleBuilder ReactNative");
+        return new PlaneDetector();
     }
 }
