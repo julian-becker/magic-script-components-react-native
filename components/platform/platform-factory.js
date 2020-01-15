@@ -90,7 +90,6 @@ export class PlatformFactory extends NativeFactory {
     }
 
     createElement(name, container, ...args) {
-        console.log("PlatformFactory createElement ", name);
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.createElement expects "name" to be string');
         }
