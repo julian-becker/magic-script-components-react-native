@@ -21,7 +21,7 @@ import SceneKit
 @objc open class PlaneDetector: NSObject, RCTARViewObserving {
     @objc public static var instance: PlaneDetector = PlaneDetector()
     
-    fileprivate var planes: [PlaneNode] = []
+    @objc var planes: [PlaneNode] = []
     fileprivate weak var arView: RCTARView?
 
     @objc public func register(arView: RCTARView) {
@@ -41,7 +41,6 @@ import SceneKit
     }
 
     func handleNodeTap(_ node: PlaneNode) {
-//        print(#function)
         self.onPlaneTapped?(self)
     }
     
@@ -51,6 +50,8 @@ import SceneKit
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
         let planeNode = PlaneNode()
+        planeNode.planeAnchor = planeAnchor
+
         planeNode.setupWith(planeAnchor: planeAnchor)
         planeNode.updateLayout()
         planes.append(planeNode)
@@ -61,15 +62,16 @@ import SceneKit
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-        print(#function)
+        // if expected more effective way of handling plane/anchor update put some logic here
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        print(#function)
         guard let planeAnchor = anchor as? ARPlaneAnchor,
             let planeNode = node.childNodes.first as? PlaneNode
             else { return }
-        
+
+        planeNode.planeAnchor = planeAnchor
+
         planeNode.updateWith(planeAnchor: planeAnchor)
 
         // notify JSX layer
@@ -77,7 +79,6 @@ import SceneKit
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
-        print(#function)
         guard let _ = anchor as? ARPlaneAnchor,
             let planeNode = node.childNodes.first as? PlaneNode
             else { return }

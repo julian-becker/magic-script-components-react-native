@@ -101,6 +101,12 @@ class ViewController: UIViewController {
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+
+        PlaneDetector.instance.onPlaneDetected = { planeDetector in
+            planeDetector.planes.forEach {
+                print("BUKA \($0.type)")
+            }
+        }
     }
 
     fileprivate func setupDropdownListTest() {
