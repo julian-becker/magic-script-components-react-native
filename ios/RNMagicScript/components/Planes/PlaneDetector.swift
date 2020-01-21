@@ -41,11 +41,12 @@ import SceneKit
     }
 
     func handleNodeTap(_ node: PlaneNode) {
-        self.onPlaneTapped?(self)
+
     }
     
-    @objc public var onPlaneDetected: ((_ sender: PlaneDetector) -> Void)?
-    @objc public var onPlaneTapped: ((_ sender: PlaneDetector) -> Void)?
+    @objc public var onPlaneDetected: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
+    @objc public var onPlaneUpdated: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
+    @objc public var onPlaneTapped: ((_ sender: PlaneDetector, _ plane: PlaneNode) -> Void)?
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
@@ -57,8 +58,16 @@ import SceneKit
         planes.append(planeNode)
         node.addChildNode(planeNode)
 
+
+        var vertices = [[CGFloat]]()
+        if let planeVertices = planeNode.vertices {
+            for vertice in planeVertices {
+                vertices.append([CGFloat(vertice.x), CGFloat(vertice.y), CGFloat(vertice.z)])
+            }
+        }
+
         // notify JSX layer
-        self.onPlaneDetected?(self)
+        self.onPlaneDetected?(self, planeNode, vertices, [CGFloat(planeNode.center.x), CGFloat(planeNode.center.y), CGFloat(planeNode.center.z)])
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -74,8 +83,15 @@ import SceneKit
 
         planeNode.updateWith(planeAnchor: planeAnchor)
 
+        var vertices = [[CGFloat]]()
+        if let planeVertices = planeNode.vertices {
+            for vertice in planeVertices {
+                vertices.append([CGFloat(vertice.x), CGFloat(vertice.y), CGFloat(vertice.z)])
+            }
+        }
+
         // notify JSX layer
-        self.onPlaneDetected?(self)
+        self.onPlaneUpdated?(self, planeNode, vertices, [CGFloat(planeNode.center.x), CGFloat(planeNode.center.y), CGFloat(planeNode.center.z)])
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {

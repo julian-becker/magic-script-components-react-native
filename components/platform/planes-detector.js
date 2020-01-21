@@ -12,6 +12,11 @@ export default class PlaneDetector {
         this.arPlaneDetector.addOnPlaneDetectedEventHandler();
     }
 
+    addOnPlaneUpdatedObserver(observerCallback) {
+        this.arPlaneDetectorEventManager.addListener("onPlaneUpdated", observerCallback);
+        this.arPlaneDetector.addOnPlaneUpdatedEventHandler();
+    }
+
     addOnPlaneTappedObserver(observerCallback) {
         this.arPlaneDetectorEventManager.addListener("onPlaneTapped", observerCallback);
         this.arPlaneDetector.addOnPlaneTappedEventHandler();

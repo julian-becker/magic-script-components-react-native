@@ -18,10 +18,10 @@ import UIKit
 import ARKit
 import SceneKit
 
-class PlaneNode: UiNode {
+@objc public class PlaneNode: UiNode {
     var planeAnchor: ARPlaneAnchor?
 
-    @objc var id: UUID? {
+    @objc open var id: UUID? {
         return planeAnchor?.identifier
     }
 
@@ -33,7 +33,7 @@ class PlaneNode: UiNode {
         return planeAnchor?.extent.y ?? 0.0
     }
 
-    @objc override var position: SCNVector3 { // looks like it's position of center
+    @objc override public var position: SCNVector3 { // looks like it's position of center
         set { }
         get { return SCNVector3(CGFloat(planeAnchor?.center.x ?? 0.0), CGFloat(planeAnchor?.center.y ?? 0.0), CGFloat(planeAnchor?.center.z ?? 0.0)) }
     }
@@ -46,10 +46,15 @@ class PlaneNode: UiNode {
         return transform.forward
     }
 
-    @objc var vertices: [SCNVector3]? {
+    @objc open var vertices: [SCNVector3]? {
         //        Convert vertices to correct format
         //        return planeAnchor?.geometry.vertices // [vector_float3]
-        return []
+        guard let vertices = planeAnchor?.geometry.boundaryVertices else { return nil }
+        var result = [SCNVector3]()
+        for vertice in vertices {
+            result.append(SCNVector3(vertice))
+        }
+        return result
     }
 
     @objc var type: String {
@@ -71,7 +76,7 @@ extension PlaneNode {
         let height = CGFloat(planeAnchor.extent.z)
         let plane = SCNPlane(width: width, height: height)
 
-        plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
+        plane.materials.first?.diffuse.contents = UIColor.clear
 
         let planeNode = SCNNode(geometry: plane)
 
@@ -89,7 +94,7 @@ extension PlaneNode {
 
     func updateWith(planeAnchor: ARPlaneAnchor) {
         guard let planeNode = childNodes.first,
-            let plane = planeNode.geometry as? SCNPlane else { return }
+            let plane = childNodes[1].geometry as? SCNPlane else { return }
 
         let width = CGFloat(planeAnchor.extent.x)
         let height = CGFloat(planeAnchor.extent.z)
@@ -100,6 +105,7 @@ extension PlaneNode {
         let y = CGFloat(planeAnchor.center.y)
         let z = CGFloat(planeAnchor.center.z)
         planeNode.position = SCNVector3(x, y, z)
+        layoutIfNeeded()
     }
 }
 

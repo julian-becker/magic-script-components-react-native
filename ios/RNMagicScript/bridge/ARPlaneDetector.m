@@ -35,15 +35,22 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(addOnPlaneDetectedEventHandler) {
     NSLog(@"addOnPlaneDetectedEventHandler");
-    PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender) {
-        [[ARPlaneDetectorEvents instance] onPlaneDetectedEventReceived:sender];
+    PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
+        [[ARPlaneDetectorEvents instance] onPlaneDetectedEventReceived:sender plane:plane vertices:vertices center: center];
+    };
+}
+
+RCT_EXPORT_METHOD(addOnPlaneUpdatedEventHandler) {
+    NSLog(@"addOnPlaneUpdatedEventHandler");
+    PlaneDetector.instance.onPlaneUpdated = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
+        [[ARPlaneDetectorEvents instance] onPlaneUpdatedEventReceived:sender plane:plane vertices:vertices center: center];
     };
 }
 
 RCT_EXPORT_METHOD(addOnPlaneTappedEventHandler) {
     NSLog(@"addOnPlaneTappedEventHandler");
-    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender) {
-        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender];
+    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender, PlaneNode *plane) {
+        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender plane: plane];
     };
 }
 

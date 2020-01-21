@@ -20,12 +20,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PlaneDetector;
+@class PlaneNode;
 
 @interface ARPlaneDetectorEvents : RCTEventEmitter <RCTBridgeModule>
 + (instancetype)instance;
 
-- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender;
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender;
+- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
+- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane;
 @end
 
 NS_ASSUME_NONNULL_END

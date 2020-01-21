@@ -56,6 +56,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[@"onPlaneDetected",
+             @"onPlaneUpdated",
              @"onPlaneTapped"];
 }
 
@@ -74,19 +75,16 @@ RCT_EXPORT_MODULE();
 }
 
 
-- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender {
-    NSMutableArray<NSArray<NSNumber *> *> *localPositions = [NSMutableArray new];
-    for (TransformNode *plane in sender.detectedPlanes) {
-        if ([plane.childNodes firstObject]) {
-            SCNNode *innerPlane = [plane.childNodes firstObject];
-            NSLog(@"%@", @[@(innerPlane.position.x), @(innerPlane.position.y), @(innerPlane.position.z)]);
-            [localPositions addObject:@[@(innerPlane.position.x), @(innerPlane.position.y), @(innerPlane.position.z)]];
-        }
-    }
-    [self onEventWithName:@"onPlaneDetected" sender:sender body:@{ @"detectedPlanes": localPositions }];
+- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center {
+    [self onEventWithName:@"onPlaneDetected" sender:sender body:@{ @"detectedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center }];
 }
 
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender {
+- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center {
+    [self onEventWithName:@"onPlaneUpdated" sender:sender body:@{ @"updatedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center}];
+}
+
+
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane {
     [self onEventWithName:@"onPlaneTapped" sender:sender body:NULL];
 }
 

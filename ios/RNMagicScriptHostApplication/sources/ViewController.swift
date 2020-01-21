@@ -102,10 +102,14 @@ class ViewController: UIViewController {
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
-        PlaneDetector.instance.onPlaneDetected = { planeDetector in
-            planeDetector.planes.forEach {
-                print("BUKA \($0.type)")
-            }
+        PlaneDetector.instance.onPlaneDetected = { planeDetector, plane in
+//            print("BUKA - detected \(plane.id), \(plane.type), \(plane.position), \(plane.normal)")
+        }
+
+        PlaneDetector.instance.onPlaneUpdated = { planeDetector, plane in
+//            print("BUKA - updated \(plane.id), \(plane.type), \(plane.center), width: \(plane.width), height: \(plane.height)")
+            print("BUKA - updated \(plane.id), number of vertices: \(plane.vertices?.count)")
+
         }
     }
 
