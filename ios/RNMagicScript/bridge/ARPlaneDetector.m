@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(stopDetecting) {
 
 RCT_EXPORT_METHOD(getAllPlanes:(NSDictionary *)configuration callback:(RCTResponseSenderBlock)callback) {
     NSLog(@"getAllPlanes %@", configuration);
-    callback(@[[NSNull null], []]);
+    callback(@[[NSNull null], @[]]);
 }
 
 RCT_EXPORT_METHOD(reset) {
@@ -56,7 +56,7 @@ RCT_EXPORT_METHOD(reset) {
 
 RCT_EXPORT_METHOD(requestPlaneCast:(NSDictionary *)configuration callback:(RCTResponseSenderBlock)callback) {
     NSLog(@"requestPlaneCast %@", configuration);
-    callback(@[[NSNull null], []]);
+    callback(@[[NSNull null], @[]]);
 }
 
 RCT_EXPORT_METHOD(addOnPlaneDetectedEventHandler) {
