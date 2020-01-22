@@ -46,6 +46,7 @@ import SceneKit
     
     @objc public var onPlaneDetected: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
     @objc public var onPlaneUpdated: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
+    @objc public var onPlaneRemoved: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
     @objc public var onPlaneTapped: ((_ sender: PlaneDetector, _ plane: PlaneNode) -> Void)?
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
@@ -99,5 +100,16 @@ import SceneKit
             let planeNode = node.childNodes.first as? PlaneNode
             else { return }
         planes.removeAll { $0 == planeNode }
+
+
+        var vertices = [[CGFloat]]()
+        if let planeVertices = planeNode.vertices {
+            for vertice in planeVertices {
+                vertices.append([CGFloat(vertice.x), CGFloat(vertice.y), CGFloat(vertice.z)])
+            }
+        }
+
+        // notify JSX layer
+        self.onPlaneUpdated?(self, planeNode, vertices, [CGFloat(planeNode.center.x), CGFloat(planeNode.center.y), CGFloat(planeNode.center.z)])
     }
 }

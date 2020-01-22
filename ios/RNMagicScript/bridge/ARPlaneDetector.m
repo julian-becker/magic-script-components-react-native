@@ -18,6 +18,8 @@
 #import "ARPlaneDetectorEvents.h"
 #import "RNMagicScript-Swift.h"
 
+#import <Foundation/Foundation.h>
+
 @interface ARPlaneDetector ()
 @end
 
@@ -33,6 +35,30 @@
 
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(startDetecting:(NSDictionary *)configuration) {
+    NSLog(@"startDetecting %@", configuration);
+    [[PlaneDetector instance] enablePlaneDetection];
+}
+
+RCT_EXPORT_METHOD(stopDetecting) {
+    NSLog(@"stopDetecting");
+    [[PlaneDetector instance] disablePlaneDetection];
+}
+
+RCT_EXPORT_METHOD(getAllPlanes:(NSDictionary *)configuration callback:(RCTResponseSenderBlock)callback) {
+    NSLog(@"getAllPlanes %@", configuration);
+    callback(@[[NSNull null], []]);
+}
+
+RCT_EXPORT_METHOD(reset) {
+    NSLog(@"reset");
+}
+
+RCT_EXPORT_METHOD(requestPlaneCast:(NSDictionary *)configuration callback:(RCTResponseSenderBlock)callback) {
+    NSLog(@"requestPlaneCast %@", configuration);
+    callback(@[[NSNull null], []]);
+}
+
 RCT_EXPORT_METHOD(addOnPlaneDetectedEventHandler) {
     NSLog(@"addOnPlaneDetectedEventHandler");
     PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
@@ -47,21 +73,18 @@ RCT_EXPORT_METHOD(addOnPlaneUpdatedEventHandler) {
     };
 }
 
+RCT_EXPORT_METHOD(addOnPlaneRemovedEventHandler) {
+    NSLog(@"addOnPlaneUpdatedEventHandler");
+    PlaneDetector.instance.onPlaneRemoved = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
+        [[ARPlaneDetectorEvents instance] onPlaneRemovedEventReceived:sender plane:plane vertices:vertices center: center];
+    };
+}
+
 RCT_EXPORT_METHOD(addOnPlaneTappedEventHandler) {
     NSLog(@"addOnPlaneTappedEventHandler");
     PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender, PlaneNode *plane) {
         [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender plane: plane];
     };
-}
-
-RCT_EXPORT_METHOD(startPlaneDetection) {
-    NSLog(@"startPlaneDetection");
-    [[PlaneDetector instance] enablePlaneDetection];
-}
-
-RCT_EXPORT_METHOD(stopPlaneDetection) {
-    NSLog(@"stopPlaneDetection");
-    [[PlaneDetector instance] disablePlaneDetection];
 }
 
 @end

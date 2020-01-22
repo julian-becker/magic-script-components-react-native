@@ -57,6 +57,7 @@ RCT_EXPORT_MODULE();
 - (NSArray<NSString *> *)supportedEvents {
     return @[@"onPlaneDetected",
              @"onPlaneUpdated",
+             @"onPlaneRemoved",
              @"onPlaneTapped"];
 }
 
@@ -83,6 +84,9 @@ RCT_EXPORT_MODULE();
     [self onEventWithName:@"onPlaneUpdated" sender:sender body:@{ @"updatedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center}];
 }
 
+- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center {
+    [self onEventWithName:@"onPlaneRemoved" sender:sender body:@{ @"removedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center}];
+}
 
 - (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane {
     [self onEventWithName:@"onPlaneTapped" sender:sender body:NULL];

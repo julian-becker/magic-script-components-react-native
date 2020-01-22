@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
 - (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
+- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
 - (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane;
 @end
 
