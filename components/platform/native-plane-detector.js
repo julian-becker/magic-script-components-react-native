@@ -1,6 +1,6 @@
 import { NativeModules, NativeEventEmitter } from "react-native";
 
-export default class PlaneDetector {
+export default class NativePlaneDetector {
     constructor() {
         this.arPlaneDetector = NativeModules.ARPlaneDetector;
         this.arPlaneDetectorEventManager = new NativeEventEmitter(NativeModules.ARPlaneDetectorEvents);
