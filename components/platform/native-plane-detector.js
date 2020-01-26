@@ -4,6 +4,9 @@ export default class NativePlaneDetector {
     constructor() {
         this.arPlaneDetector = NativeModules.ARPlaneDetector;
         this.arPlaneDetectorEventManager = new NativeEventEmitter(NativeModules.ARPlaneDetectorEvents);
+        console.log("NativePlaneDetector - constructor");
+        this.subscriptionEnabled = {};
+        this.subscriptionsByObservers = {};
     }
 
     startDetecting(configuration) {
@@ -11,7 +14,12 @@ export default class NativePlaneDetector {
         this.arPlaneDetector.startDetecting(configuration);
     }
 
-    stopDetecting() {
+    stopDetecting(observer) {
+        if (observer in this.subscriptionsByObservers) {
+            const subscriptions = this.subscriptionsByObservers[observer];
+            subscriptions.forEach((element) => { element.remove(); });
+        }
+
         this.arPlaneDetector.stopDetecting();
     }
 
@@ -40,23 +48,63 @@ export default class NativePlaneDetector {
     }
 
     // callbacks registration
-    addOnPlaneDetectedObserver(observerCallback) {
-        this.arPlaneDetectorEventManager.addListener("onPlaneDetected", observerCallback);
-        this.arPlaneDetector.addOnPlaneDetectedEventHandler();
+    addOnPlaneDetectedObserver(observer, observerCallback) {
+        // console.log("addOnPlaneDetectedObserver - observer: ", observer);
+        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneDetected", observerCallback);
+
+        // update subscription tracking
+       this._registerSubscriptionForObserver("onPlaneDetected", subscription, observer);
+
+        if (!("onPlaneDetected" in this.subscriptionEnabled)) { 
+            this.arPlaneDetector.addOnPlaneDetectedEventHandler(); 
+            this.subscriptionEnabled["onPlaneDetected"] = true; 
+        }
     }
 
-    addOnPlaneUpdatedObserver(observerCallback) {
-        this.arPlaneDetectorEventManager.addListener("onPlaneUpdated", observerCallback);
+    addOnPlaneUpdatedObserver(observer, observerCallback) {
+        // console.log("addOnPlaneUpdatedObserver - observer: ", observer);
+        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneUpdated", observerCallback);
+
+        // update subscription tracking
+       this._registerSubscriptionForObserver("onPlaneUpdated", subscription, observer);
+
+       if (!("onPlaneUpdated" in this.subscriptionEnabled)) { 
         this.arPlaneDetector.addOnPlaneUpdatedEventHandler();
+           this.subscriptionEnabled["onPlaneUpdated"] = true; 
+       }
     }
 
-    addOnPlaneRemovedObserver(observerCallback) {
-        this.arPlaneDetectorEventManager.addListener("onPlaneRemoved", observerCallback);
-        this.arPlaneDetector.addOnPlaneRemovedEventHandler();
+    addOnPlaneRemovedObserver(observer, observerCallback) {
+        // console.log("addOnPlaneRemovedObserver - observer: ", observer);
+        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneRemoved", observerCallback);
+
+        // update subscription tracking
+        this._registerSubscriptionForObserver("onPlaneRemoved", subscription, observer);
+
+        if (!("onPlaneRemoved" in this.subscriptionEnabled)) { 
+            this.arPlaneDetector.addOnPlaneRemovedEventHandler();
+            this.subscriptionEnabled["onPlaneRemoved"] = true; 
+        }
     }
 
-    addOnPlaneTappedObserver(observerCallback) {
-        this.arPlaneDetectorEventManager.addListener("onPlaneTapped", observerCallback);
-        this.arPlaneDetector.addOnPlaneTappedEventHandler();
+    addOnPlaneTappedObserver(observer, observerCallback) {
+        // console.log("addOnPlaneTappedObserver - observer: ", observer);
+        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneTapped", observerCallback);
+
+        // update subscription tracking
+        this._registerSubscriptionForObserver("onPlaneTapped", subscription, observer);
+
+        if (!("onPlaneTapped" in this.subscriptionEnabled)) { 
+            this.arPlaneDetector.addOnPlaneTappedEventHandler();
+            this.subscriptionEnabled["onPlaneTapped"] = true; 
+        }
+    }
+
+    _registerSubscriptionForObserver(name, subscription, observer) {
+        if (!(observer in this.subscriptionsByObservers)) {
+            this.subscriptionsByObservers[observer] = { name: subscription };
+            return;
+        }
+        this.subscriptionsByObservers[observer][name] = subscription;
     }
 }
