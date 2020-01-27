@@ -40,14 +40,33 @@ import SceneKit
         self.arView?.planeDetection = false
     }
 
-    func handleNodeTap(_ node: PlaneNode) {
+    func handleNodeTap(_ planeNode: PlaneNode, _ touchPoint: CGPoint?) {
+        print("BUKA touchPoint: \(touchPoint)")
+        var vertices = [[CGFloat]]()
+        if let planeVertices = planeNode.vertices {
+            for vertice in planeVertices {
+                vertices.append([CGFloat(vertice.x), CGFloat(vertice.y), CGFloat(vertice.z)])
+            }
+        }
 
+        // notify JSX layer
+        self.onPlaneTapped?(self,
+                              planeNode,
+                              planeNode.id,
+                              planeNode.type,
+                              planeNode.position.toArrayOfCGFloat,
+                              planeNode.rotation.toArrayOfCGFloat,
+                              vertices,
+                              planeNode.center.toArrayOfCGFloat,
+                              planeNode.normal.toArrayOfCGFloat,
+                              CGFloat(planeNode.width),
+                              CGFloat(planeNode.height))
     }
     
-    @objc public var onPlaneDetected: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
-    @objc public var onPlaneUpdated: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
-    @objc public var onPlaneRemoved: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ vertices: [[CGFloat]], _ center: [CGFloat]) -> Void)?
-    @objc public var onPlaneTapped: ((_ sender: PlaneDetector, _ plane: PlaneNode) -> Void)?
+    @objc public var onPlaneDetected: ((_ sender: PlaneDetector, _ plane: PlaneNode, _ id: UUID?, _ type: String, _ position: [CGFloat], _ rotation: [CGFloat], _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat], _ width: CGFloat, _ height: CGFloat) -> Void)?
+    @objc public var onPlaneUpdated:  ((_ sender: PlaneDetector, _ plane: PlaneNode, _ id: UUID?, _ type: String, _ position: [CGFloat], _ rotation: [CGFloat], _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat], _ width: CGFloat, _ height: CGFloat) -> Void)?
+    @objc public var onPlaneRemoved:  ((_ sender: PlaneDetector, _ plane: PlaneNode, _ id: UUID?, _ type: String, _ position: [CGFloat], _ rotation: [CGFloat], _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat], _ width: CGFloat, _ height: CGFloat) -> Void)?
+    @objc public var onPlaneTapped:  ((_ sender: PlaneDetector, _ plane: PlaneNode, _ id: UUID?, _ type: String, _ position: [CGFloat], _ rotation: [CGFloat], _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat], _ width: CGFloat, _ height: CGFloat) -> Void)?
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
@@ -59,7 +78,6 @@ import SceneKit
         planes.append(planeNode)
         node.addChildNode(planeNode)
 
-
         var vertices = [[CGFloat]]()
         if let planeVertices = planeNode.vertices {
             for vertice in planeVertices {
@@ -68,7 +86,17 @@ import SceneKit
         }
 
         // notify JSX layer
-        self.onPlaneDetected?(self, planeNode, vertices, [CGFloat(planeNode.center.x), CGFloat(planeNode.center.y), CGFloat(planeNode.center.z)])
+        self.onPlaneDetected?(self,
+                              planeNode,
+                              planeNode.id,
+                              planeNode.type,
+                              planeNode.position.toArrayOfCGFloat,
+                              planeNode.rotation.toArrayOfCGFloat,
+                              vertices,
+                              planeNode.center.toArrayOfCGFloat,
+                              planeNode.normal.toArrayOfCGFloat,
+                              CGFloat(planeNode.width),
+                              CGFloat(planeNode.height))
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -92,7 +120,17 @@ import SceneKit
         }
 
         // notify JSX layer
-        self.onPlaneUpdated?(self, planeNode, vertices, [CGFloat(planeNode.center.x), CGFloat(planeNode.center.y), CGFloat(planeNode.center.z)])
+        self.onPlaneDetected?(self,
+                              planeNode,
+                              planeNode.id,
+                              planeNode.type,
+                              planeNode.position.toArrayOfCGFloat,
+                              planeNode.rotation.toArrayOfCGFloat,
+                              vertices,
+                              planeNode.center.toArrayOfCGFloat,
+                              planeNode.normal.toArrayOfCGFloat,
+                              CGFloat(planeNode.width),
+                              CGFloat(planeNode.height))
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
@@ -110,6 +148,28 @@ import SceneKit
         }
 
         // notify JSX layer
-        self.onPlaneUpdated?(self, planeNode, vertices, [CGFloat(planeNode.center.x), CGFloat(planeNode.center.y), CGFloat(planeNode.center.z)])
+        self.onPlaneDetected?(self,
+                              planeNode,
+                              planeNode.id,
+                              planeNode.type,
+                              planeNode.position.toArrayOfCGFloat,
+                              planeNode.rotation.toArrayOfCGFloat,
+                              vertices,
+                              planeNode.center.toArrayOfCGFloat,
+                              planeNode.normal.toArrayOfCGFloat,
+                              CGFloat(planeNode.width),
+                              CGFloat(planeNode.height))
+    }
+}
+
+extension SCNVector3 {
+    var toArrayOfCGFloat: [CGFloat] {
+        return [CGFloat(x), CGFloat(y), CGFloat(z)]
+    }
+}
+
+extension SCNVector4 {
+    var toArrayOfCGFloat: [CGFloat] {
+        return [CGFloat(x), CGFloat(y), CGFloat(z), CGFloat(w)]
     }
 }

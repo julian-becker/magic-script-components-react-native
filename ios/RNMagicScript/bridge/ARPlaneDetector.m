@@ -61,29 +61,29 @@ RCT_EXPORT_METHOD(requestPlaneCast:(NSDictionary *)configuration callback:(RCTRe
 
 RCT_EXPORT_METHOD(addOnPlaneDetectedEventHandler) {
     NSLog(@"addOnPlaneDetectedEventHandler");
-    PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
-        [[ARPlaneDetectorEvents instance] onPlaneDetectedEventReceived:sender plane:plane vertices:vertices center: center];
+    PlaneDetector.instance.onPlaneDetected = ^(PlaneDetector *sender, PlaneNode *plane, NSUUID *id, NSString *type, NSArray<NSNumber *> *position, NSArray<NSNumber *> *rotation, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center, NSArray<NSNumber *> *normal, CGFloat width, CGFloat height) {
+        [[ARPlaneDetectorEvents instance] onPlaneDetectedEventReceived:sender plane:plane id:id type:type position:position rotation:rotation vertices:vertices center:center normal:normal width:width height:height];
     };
 }
 
 RCT_EXPORT_METHOD(addOnPlaneUpdatedEventHandler) {
     NSLog(@"addOnPlaneUpdatedEventHandler");
-    PlaneDetector.instance.onPlaneUpdated = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
-        [[ARPlaneDetectorEvents instance] onPlaneUpdatedEventReceived:sender plane:plane vertices:vertices center: center];
+    PlaneDetector.instance.onPlaneUpdated = ^(PlaneDetector *sender, PlaneNode *plane, NSUUID *id, NSString *type, NSArray<NSNumber *> *position, NSArray<NSNumber *> *rotation, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center, NSArray<NSNumber *> *normal, CGFloat width, CGFloat height) {
+        [[ARPlaneDetectorEvents instance] onPlaneUpdatedEventReceived:sender plane:plane id:id type:type position:position rotation:rotation vertices:vertices center:center normal:normal width:width height:height];
     };
 }
 
 RCT_EXPORT_METHOD(addOnPlaneRemovedEventHandler) {
     NSLog(@"addOnPlaneUpdatedEventHandler");
-    PlaneDetector.instance.onPlaneRemoved = ^(PlaneDetector *sender, PlaneNode *plane, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center) {
-        [[ARPlaneDetectorEvents instance] onPlaneRemovedEventReceived:sender plane:plane vertices:vertices center: center];
+    PlaneDetector.instance.onPlaneRemoved = ^(PlaneDetector *sender, PlaneNode *plane, NSUUID *id, NSString *type, NSArray<NSNumber *> *position, NSArray<NSNumber *> *rotation, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center, NSArray<NSNumber *> *normal, CGFloat width, CGFloat height) {
+        [[ARPlaneDetectorEvents instance] onPlaneRemovedEventReceived:sender plane:plane id:id type:type position:position rotation:rotation vertices:vertices center:center normal:normal width:width height:height];
     };
 }
 
 RCT_EXPORT_METHOD(addOnPlaneTappedEventHandler) {
     NSLog(@"addOnPlaneTappedEventHandler");
-    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender, PlaneNode *plane) {
-        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender plane: plane];
+    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender, PlaneNode *plane, NSUUID *id, NSString *type, NSArray<NSNumber *> *position, NSArray<NSNumber *> *rotation, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center, NSArray<NSNumber *> *normal, CGFloat width, CGFloat height) {
+        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender plane:plane id:id type:type position:position rotation:rotation vertices:vertices center:center normal:normal width:width height:height];
     };
 }
 

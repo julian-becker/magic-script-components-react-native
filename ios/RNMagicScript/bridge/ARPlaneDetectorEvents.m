@@ -76,20 +76,64 @@ RCT_EXPORT_MODULE();
 }
 
 
-- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center {
-    [self onEventWithName:@"onPlaneDetected" sender:sender body:@{ @"detectedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center }];
+- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height {
+    [self onEventWithName:@"onPlaneDetected" sender:sender body:
+     @{
+         @"id": [id UUIDString],
+         @"type": type,
+         @"position": position,
+         @"rotation": position,
+         @"vertices": vertices,
+         @"center": center,
+         @"normal": normal,
+         @"width": @(width),
+         @"height": @(height)
+     }];
 }
 
-- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center {
-    [self onEventWithName:@"onPlaneUpdated" sender:sender body:@{ @"updatedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center}];
+- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height {
+    [self onEventWithName:@"onPlaneUpdated" sender:sender body:
+     @{
+         @"id": [id UUIDString],
+         @"type": type,
+         @"position": position,
+         @"rotation": position,
+         @"vertices": vertices,
+         @"center": center,
+         @"normal": normal,
+         @"width": @(width),
+         @"height": @(height)
+     }];
 }
 
-- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center {
-    [self onEventWithName:@"onPlaneRemoved" sender:sender body:@{ @"removedPlane": [plane.id UUIDString], @"vertices": vertices, @"center": center}];
+- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height {
+    [self onEventWithName:@"onPlaneRemoved" sender:sender body:
+     @{
+         @"id": [id UUIDString],
+         @"type": type,
+         @"position": position,
+         @"rotation": position,
+         @"vertices": vertices,
+         @"center": center,
+         @"normal": normal,
+         @"width": @(width),
+         @"height": @(height)
+     }];
 }
 
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane {
-    [self onEventWithName:@"onPlaneTapped" sender:sender body:NULL];
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height; {
+    [self onEventWithName:@"onPlaneTapped" sender:sender body:
+     @{
+         @"id": [id UUIDString],
+         @"type": type,
+         @"position": position,
+         @"rotation": position,
+         @"vertices": vertices,
+         @"center": center,
+         @"normal": normal,
+         @"width": @(width),
+         @"height": @(height)
+     }];
 }
 
 @end

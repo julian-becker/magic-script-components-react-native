@@ -76,14 +76,14 @@ extension PlaneNode {
         let height = CGFloat(planeAnchor.extent.z)
         let plane = SCNPlane(width: width, height: height)
 
-        plane.materials.first?.diffuse.contents = UIColor.clear
+        plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
 
         let planeNode = SCNNode(geometry: plane)
 
         let x = CGFloat(planeAnchor.center.x)
         let y = CGFloat(planeAnchor.center.y)
         let z = CGFloat(planeAnchor.center.z)
-        planeNode.position = SCNVector3(x,y,z)
+        planeNode.position = SCNVector3(x, y, z)
 
         // Planes in SceneKit are vertical by default so we need to rotate
         // 90 degrees to match planes in ARKit
