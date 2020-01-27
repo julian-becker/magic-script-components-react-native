@@ -1,8 +1,9 @@
 import ARView from "./ARView";
 import ReactNativeMagicScript from "./components/react-native-magic-script/react-native-magic-script";
-import ModuleBuilder from './components/core/module-builder.js';
+import PlatformInformation from "./components/platform/platform-information";
+import NativePlaneDetector from "./components/platform/native-plane-detector";
 
 // backward compatibility, should be removed in the future
 const ARKitScript = ReactNativeMagicScript;
 
-export { ARView, ARKitScript, ReactNativeMagicScript, ModuleBuilder };
+export { ARView, ARKitScript, ReactNativeMagicScript, PlatformInformation, NativePlaneDetector };
