@@ -17,7 +17,13 @@ export default class NativePlaneDetector {
     stopDetecting(observer) {
         if (observer in this.subscriptionsByObservers) {
             const subscriptions = this.subscriptionsByObservers[observer];
-            subscriptions.forEach((element) => { element.remove(); });
+            for (var key in subscriptions) {
+                subscriptions[key].remove();
+                delete subscriptions[key];
+                if (this.subscriptionEnabled[key]) {
+                    delete this.subscriptionEnabled[key]
+                }
+            }
         }
 
         this.arPlaneDetector.stopDetecting();
