@@ -27,7 +27,7 @@ import UIKit
 class GestureHandler: GestureHandling {
     @objc func handleTapGesture(_ sender: TapGestureRecognizer) {
         if let planeNode = sender.tappedNode as? PlaneNode {
-            PlaneDetector.instance.handleNodeTap(planeNode)
+            PlaneDetector.instance.handleNodeTap(planeNode, sender.initialTouchLocation)
             return
         }
 

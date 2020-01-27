@@ -25,10 +25,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ARPlaneDetectorEvents : RCTEventEmitter <RCTBridgeModule>
 + (instancetype)instance;
 
-- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
-- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
-- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center;
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane;
+- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
+- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
+- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
 @end
 
 NS_ASSUME_NONNULL_END
