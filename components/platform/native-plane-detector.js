@@ -4,7 +4,6 @@ export default class NativePlaneDetector {
     constructor() {
         this.arPlaneDetector = NativeModules.ARPlaneDetector;
         this.arPlaneDetectorEventManager = new NativeEventEmitter(NativeModules.ARPlaneDetectorEvents);
-        console.log("NativePlaneDetector - constructor");
         this.subscriptionEnabled = {};
         this.subscriptionsByObservers = {};
     }
@@ -30,6 +29,7 @@ export default class NativePlaneDetector {
     }
 
     getAllPlanes(configuration, callback) {
+        // configuration sample: { planeType: ["horizontal", "vertical"] }
         this.arPlaneDetector.getAllPlanes(configuration, (error, planes) => {
             if (error) {
                 callback(error, null);
@@ -44,6 +44,7 @@ export default class NativePlaneDetector {
     }
 
     requestPlaneCast(configuration, callback) {
+        // configuration sample: { planeType: "vertical", rayCastParameters: {...}] }
         this.arPlaneDetector.requestPlaneCast(configuration, (error, planes) => {
             if (error) {
                 callback(error, null);
@@ -56,53 +57,57 @@ export default class NativePlaneDetector {
     // callbacks registration
     addOnPlaneDetectedObserver(observer, observerCallback) {
         // console.log("addOnPlaneDetectedObserver - observer: ", observer);
-        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneDetected", observerCallback);
+        const subscriptionName = "onPlaneDetected";
+        const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 
         // update subscription tracking
-       this._registerSubscriptionForObserver("onPlaneDetected", subscription, observer);
+       this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-        if (!("onPlaneDetected" in this.subscriptionEnabled)) { 
+        if (!(subscriptionName in this.subscriptionEnabled)) { 
             this.arPlaneDetector.addOnPlaneDetectedEventHandler(); 
-            this.subscriptionEnabled["onPlaneDetected"] = true; 
+            this.subscriptionEnabled[subscriptionName] = true; 
         }
     }
 
     addOnPlaneUpdatedObserver(observer, observerCallback) {
         // console.log("addOnPlaneUpdatedObserver - observer: ", observer);
+        const subscriptionName = "onPlaneUpdated";
         const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneUpdated", observerCallback);
 
         // update subscription tracking
-       this._registerSubscriptionForObserver("onPlaneUpdated", subscription, observer);
+       this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-       if (!("onPlaneUpdated" in this.subscriptionEnabled)) { 
+       if (!(subscriptionName in this.subscriptionEnabled)) { 
         this.arPlaneDetector.addOnPlaneUpdatedEventHandler();
-           this.subscriptionEnabled["onPlaneUpdated"] = true; 
+           this.subscriptionEnabled[subscriptionName] = true; 
        }
     }
 
     addOnPlaneRemovedObserver(observer, observerCallback) {
         // console.log("addOnPlaneRemovedObserver - observer: ", observer);
-        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneRemoved", observerCallback);
+        const subscriptionName = "onPlaneRemoved";
+        const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 
         // update subscription tracking
-        this._registerSubscriptionForObserver("onPlaneRemoved", subscription, observer);
+        this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-        if (!("onPlaneRemoved" in this.subscriptionEnabled)) { 
+        if (!(subscriptionName in this.subscriptionEnabled)) { 
             this.arPlaneDetector.addOnPlaneRemovedEventHandler();
-            this.subscriptionEnabled["onPlaneRemoved"] = true; 
+            this.subscriptionEnabled[subscriptionName] = true; 
         }
     }
 
     addOnPlaneTappedObserver(observer, observerCallback) {
         // console.log("addOnPlaneTappedObserver - observer: ", observer);
-        const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneTapped", observerCallback);
+        const subscriptionName = "onPlaneTapped";
+        const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 
         // update subscription tracking
-        this._registerSubscriptionForObserver("onPlaneTapped", subscription, observer);
+        this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-        if (!("onPlaneTapped" in this.subscriptionEnabled)) { 
+        if (!(subscriptionName in this.subscriptionEnabled)) { 
             this.arPlaneDetector.addOnPlaneTappedEventHandler();
-            this.subscriptionEnabled["onPlaneTapped"] = true; 
+            this.subscriptionEnabled[subscriptionName] = true; 
         }
     }
 
