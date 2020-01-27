@@ -56,6 +56,7 @@ export default class NativePlaneDetector {
 
     // callbacks registration
     addOnPlaneDetectedObserver(observer, observerCallback) {
+        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
         // console.log("addOnPlaneDetectedObserver - observer: ", observer);
         const subscriptionName = "onPlaneDetected";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
@@ -70,6 +71,7 @@ export default class NativePlaneDetector {
     }
 
     addOnPlaneUpdatedObserver(observer, observerCallback) {
+        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
         // console.log("addOnPlaneUpdatedObserver - observer: ", observer);
         const subscriptionName = "onPlaneUpdated";
         const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneUpdated", observerCallback);
@@ -84,6 +86,7 @@ export default class NativePlaneDetector {
     }
 
     addOnPlaneRemovedObserver(observer, observerCallback) {
+        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
         // console.log("addOnPlaneRemovedObserver - observer: ", observer);
         const subscriptionName = "onPlaneRemoved";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
@@ -98,6 +101,7 @@ export default class NativePlaneDetector {
     }
 
     addOnPlaneTappedObserver(observer, observerCallback) {
+        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
         // console.log("addOnPlaneTappedObserver - observer: ", observer);
         const subscriptionName = "onPlaneTapped";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
