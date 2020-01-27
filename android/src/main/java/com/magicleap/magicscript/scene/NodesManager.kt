@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
+import com.google.ar.core.Plane
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -41,5 +42,7 @@ interface NodesManager {
     fun clear()
 
     fun onTapArPlane(anchor: Anchor)
+
+    fun onPlaneUpdated(planes: MutableCollection<Plane>)
 
 }

@@ -65,7 +65,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
         activityRef = new WeakReference<>(currentActivity);
         if (currentActivity != null) {
             currentActivity.getSupportFragmentManager().beginTransaction().add(fragment, "arFragment").commitNow();
-            addView(mContainer, fragment.getView(), 0); // same as mCointainer.addView
+            addView(mContainer, fragment.getView(), 0); // same as mContainer.addView
             Scene scene = fragment.getArSceneView().getScene();
             UiNodesManager.Companion.getINSTANCE().registerScene(scene);
         } else {

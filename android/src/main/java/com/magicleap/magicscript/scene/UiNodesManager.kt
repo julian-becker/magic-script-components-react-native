@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
+import com.google.ar.core.Plane
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
@@ -67,6 +68,11 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             planeDetection = false
             rootNode.anchor = anchor
         }
+    }
+
+    @Synchronized
+    override fun onPlaneUpdated(planes: MutableCollection<Plane>) {
+
     }
 
     @Synchronized
