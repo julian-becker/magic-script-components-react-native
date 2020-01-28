@@ -30,7 +30,7 @@ import SceneKit
     }
 
     @objc var height: Float {
-        return planeAnchor?.extent.y ?? 0.0
+        return planeAnchor?.extent.z ?? 0.0
     }
 
     @objc override public var position: SCNVector3 { // looks like it's position of center
@@ -64,10 +64,6 @@ import SceneKit
 
         return "Sth went wrong"
     }
-
-    override func hitTest(ray: Ray) -> TransformNode? {
-        return self
-    }
 }
 
 extension PlaneNode {
@@ -76,7 +72,7 @@ extension PlaneNode {
         let height = CGFloat(planeAnchor.extent.z)
         let plane = SCNPlane(width: width, height: height)
 
-        plane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.65)
+        plane.materials.first?.diffuse.contents = UIColor.clear // red.withAlphaComponent(0.45)
 
         let planeNode = SCNNode(geometry: plane)
 
