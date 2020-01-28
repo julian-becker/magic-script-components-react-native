@@ -33,13 +33,13 @@ class CustomArFragment : ArFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        session = Session(context)
+//        session = Session(context)
         arSceneView.scene.addOnUpdateListener {
             if (!onReadyCalled && arSceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
                 // We can add AR objects after session is ready and camera is in tracking mode
                 UiNodesManager.INSTANCE.onArFragmentReady()
                 onReadyCalled = true
-                arSceneView.setupSession(session)
+//                arSceneView.setupSession(session)
             }
 //            val newFrame = session.update()
 //            if (newFrame.timestamp != lastTimestamp) {
