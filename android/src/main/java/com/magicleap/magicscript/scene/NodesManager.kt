@@ -42,7 +42,4 @@ interface NodesManager {
     fun clear()
 
     fun onTapArPlane(anchor: Anchor)
-
-    fun onPlaneUpdated(planes: MutableCollection<Plane>)
-
 }

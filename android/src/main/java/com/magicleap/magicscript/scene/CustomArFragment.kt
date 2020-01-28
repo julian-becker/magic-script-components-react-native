@@ -22,12 +22,14 @@ import com.google.ar.core.Plane
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
+import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
 
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
     private lateinit var session: Session
     private var lastTimestamp: Long = 0L
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,7 +44,7 @@ class CustomArFragment : ArFragment() {
             val newFrame = session.update()
             if (newFrame.timestamp != lastTimestamp) {
                 lastTimestamp = newFrame.timestamp
-                UiNodesManager.INSTANCE.onPlaneUpdated(newFrame.getUpdatedTrackables(Plane::class.java))
+                ARPlaneDetectorBridge.INSTANCE.onPlaneUpdate(newFrame.getUpdatedTrackables(Plane::class.java))
             }
         }
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->

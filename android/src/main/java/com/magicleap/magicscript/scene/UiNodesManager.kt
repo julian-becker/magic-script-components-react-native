@@ -71,11 +71,6 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     @Synchronized
-    override fun onPlaneUpdated(planes: MutableCollection<Plane>) {
-
-    }
-
-    @Synchronized
     override fun findNodeWithId(nodeId: String): Node? {
         return nodesById[nodeId]
     }
