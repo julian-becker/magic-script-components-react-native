@@ -1,5 +1,7 @@
 package com.magicleap.magicscript.plane;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -20,6 +22,7 @@ import kotlin.jvm.functions.Function1;
 
 public class ARPlaneDetector extends ReactContextBaseJavaModule {
 
+    private static final String TAG = "ARPlaneDetector";
     private final ARPlaneDetectorEventsManager eventsManager;
     private final String POSITION = "position";
     private final String ROTATION = "rotation";
@@ -33,17 +36,21 @@ public class ARPlaneDetector extends ReactContextBaseJavaModule {
 
     public ARPlaneDetector(ReactApplicationContext reactContext, ARPlaneDetectorEventsManager arEventsManager, ARPlaneDetectorBridge bridge) {
         super(reactContext);
+        Log.d(TAG, "AR PLANE DETECTOR CONSTRUCTOR");
         this.eventsManager = arEventsManager;
         this.bridge = bridge;
     }
 
     @ReactMethod
     public void startDetecting(final ReadableMap configuration) {
+        Log.d(TAG, "AR PLANE DETECTOR START DETECTING");
         UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
     }
 
     @ReactMethod
-    public void stopDetecting() {
+    public void stopDetecting()
+    {
+        Log.d(TAG, "AR PLANE DETECTOR STOP DETECTING");
         UiNodesManager.Companion.getINSTANCE().setPlaneDetection(false);
     }
 

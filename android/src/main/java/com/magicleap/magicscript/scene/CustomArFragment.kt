@@ -41,11 +41,11 @@ class CustomArFragment : ArFragment() {
                 onReadyCalled = true
                 arSceneView.setupSession(session)
             }
-            val newFrame = session.update()
-            if (newFrame.timestamp != lastTimestamp) {
-                lastTimestamp = newFrame.timestamp
-                ARPlaneDetectorBridge.INSTANCE.onPlaneUpdate(newFrame.getUpdatedTrackables(Plane::class.java))
-            }
+//            val newFrame = session.update()
+//            if (newFrame.timestamp != lastTimestamp) {
+//                lastTimestamp = newFrame.timestamp
+//                ARPlaneDetectorBridge.INSTANCE.onPlaneUpdate(newFrame.getUpdatedTrackables(Plane::class.java))
+//            }
         }
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
