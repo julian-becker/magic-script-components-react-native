@@ -36,7 +36,7 @@ class UiNodeSelectorSpec: QuickSpec {
 
             beforeEach() {
                 rootNode = SCNNode()
-                nodeSelector = UiNodeSelector(rootNode, { return [] })
+                nodeSelector = UiNodeSelector(rootNode)
 
                 for (index, node) in referenceNodes.enumerated() {
                     node.position = SCNVector3(0, 0, -0.5 * CGFloat(index))

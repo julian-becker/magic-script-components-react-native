@@ -91,7 +91,7 @@ import SceneKit
         surfaces[surface.id.uuidString] = surface
 
         // notify JSX layer
-        self.onPlaneUpdated?(self,
+        self.onPlaneDetected?(self,
                             surface.id,
                             surface.type,
                             vertices,
@@ -111,7 +111,7 @@ import SceneKit
         }
 
         // notify JSX layer
-        self.onPlaneRemoved?(self,
+        self.onPlaneUpdated?(self,
                             surface.id,
                             surface.type,
                             vertices,
@@ -131,7 +131,7 @@ import SceneKit
         }
 
         // notify JSX layer
-        self.onPlaneTapped?(self,
+        self.onPlaneRemoved?(self,
                             surface.id,
                             surface.type,
                             vertices,
