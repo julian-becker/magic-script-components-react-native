@@ -1,71 +1,73 @@
 package com.magicleap.magicscript.plane;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
-import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeMap;
-import com.google.ar.core.Plane;
-import com.google.ar.sceneform.math.Vector3;
 import com.magicleap.magicscript.scene.UiNodesManager;
 
-import org.jetbrains.annotations.NotNull;
+public class ARPlaneDetector extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
-import java.util.Collection;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-
-public class ARPlaneDetector extends ReactContextBaseJavaModule {
-
-    private static final String TAG = "ARPlaneDetector";
     private final ARPlaneDetectorEventsManager eventsManager;
-    private final String POSITION = "position";
-    private final String ROTATION = "rotation";
-    private final String WIDTH = "width";
-    private final String HEIGHT = "height";
-    private final String CENTER = "center";
-    private final String NORMAL = "normal";
-    private final String VERTICES = "vertices";
     private final ARPlaneDetectorBridge bridge;
 
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public ARPlaneDetector(ReactApplicationContext reactContext, ARPlaneDetectorEventsManager arEventsManager, ARPlaneDetectorBridge bridge) {
         super(reactContext);
-        Log.d(TAG, "AR PLANE DETECTOR CONSTRUCTOR");
         this.eventsManager = arEventsManager;
         this.bridge = bridge;
     }
 
     @ReactMethod
     public void startDetecting(final ReadableMap configuration) {
-        Log.d(TAG, "AR PLANE DETECTOR START DETECTING");
         UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
+        bridge.setIsDetecting(true);
     }
 
     @ReactMethod
-    public void stopDetecting()
-    {
-        Log.d(TAG, "AR PLANE DETECTOR STOP DETECTING");
+    public void stopDetecting() {
         UiNodesManager.Companion.getINSTANCE().setPlaneDetection(false);
+        bridge.setIsDetecting(false);
     }
 
     @ReactMethod
-    public void onPlaneUpdate() {
-        this.bridge.addOnUpdateListener(new OnPlaneUpdate() {
-            @Override
-            public void invoke(@NotNull WritableMap payload) {
-                eventsManager.onPlaneUpdatedEventReceived(payload);
-            }
-        });
+    public void addOnPlaneUpdatedEventHandler() {
+        mainHandler.post(() -> this.bridge.setOnPlanesUpdatedListener(eventsManager::onPlaneUpdatedEventReceived));
+    }
+
+    @ReactMethod
+    public void addOnPlaneDetectedEventHandler() {
+        mainHandler.post(() -> this.bridge.setOnPlanesAddedListener(eventsManager::onPlaneDetectedEventReceived));
+    }
+
+    @ReactMethod
+    public void addOnPlaneRemovedEventHandler() {
+        mainHandler.post(() -> this.bridge.setOnPlanesRemovedListener(eventsManager::onPlaneRemovedEventReceived));
     }
 
     @Override
     public String getName() {
         return "ARPlaneDetector";
+    }
+
+    @Override
+    public void onHostResume() {
+        //no-op
+    }
+
+    @Override
+    public void onHostPause() {
+        //no-op
+    }
+
+    @Override
+    public void onHostDestroy() {
+        bridge.destroy();
     }
 }

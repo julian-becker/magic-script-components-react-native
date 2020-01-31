@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene
 import android.os.Bundle
 import android.view.View
 import com.google.ar.core.Plane
-import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
@@ -27,26 +26,26 @@ import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
-    private lateinit var session: Session
     private var lastTimestamp: Long = 0L
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        session = Session(context)
         arSceneView.scene.addOnUpdateListener {
             if (!onReadyCalled && arSceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
                 // We can add AR objects after session is ready and camera is in tracking mode
                 UiNodesManager.INSTANCE.onArFragmentReady()
                 onReadyCalled = true
-//                arSceneView.setupSession(session)
             }
-//            val newFrame = session.update()
-//            if (newFrame.timestamp != lastTimestamp) {
-//                lastTimestamp = newFrame.timestamp
-//                ARPlaneDetectorBridge.INSTANCE.onPlaneUpdate(newFrame.getUpdatedTrackables(Plane::class.java))
-//            }
+            if(onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
+                val newFrame = arSceneView.session?.update()
+                if (newFrame != null && newFrame.timestamp != lastTimestamp) {
+                    lastTimestamp = newFrame.timestamp
+                    ARPlaneDetectorBridge.INSTANCE.onPlaneUpdate(newFrame.getUpdatedTrackables(Plane::class.java).toList())
+                }
+            }
         }
+
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
             UiNodesManager.INSTANCE.onTapArPlane(anchor)

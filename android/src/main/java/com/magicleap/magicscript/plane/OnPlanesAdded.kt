@@ -2,6 +2,6 @@ package com.magicleap.magicscript.plane
 
 import com.facebook.react.bridge.WritableMap
 
-interface OnPlaneUpdate {
+interface OnPlanesAdded {
     fun invoke(payload: WritableMap)
 }
