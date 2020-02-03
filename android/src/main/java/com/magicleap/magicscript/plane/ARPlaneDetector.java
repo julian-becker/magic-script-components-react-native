@@ -4,11 +4,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.magicleap.magicscript.scene.UiNodesManager;
 
 public class ARPlaneDetector extends ReactContextBaseJavaModule implements LifecycleEventListener {
@@ -49,6 +52,18 @@ public class ARPlaneDetector extends ReactContextBaseJavaModule implements Lifec
     @ReactMethod
     public void addOnPlaneRemovedEventHandler() {
         mainHandler.post(() -> this.bridge.setOnPlanesRemovedListener(eventsManager::onPlaneRemovedEventReceived));
+    }
+
+    @ReactMethod
+    public void getAllPlanes(final ReadableMap configuration, final Callback callback) {
+        mainHandler.post(() -> this.bridge.getAllPlanes(configuration, callback));
+    }
+
+    @ReactMethod
+    public void requestPlaneCast(final ReadableMap configuration, final Callback callback) {
+        WritableMap error = new WritableNativeMap();
+        error.putString("error", "Not implemented yet");
+        mainHandler.post(() -> callback.invoke(error, null));
     }
 
     @Override

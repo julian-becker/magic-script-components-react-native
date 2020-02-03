@@ -28,6 +28,28 @@ class CustomArFragment : ArFragment() {
     private var onReadyCalled = false
     private var lastTimestamp: Long = 0L
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ARPlaneDetectorBridge.INSTANCE.setOnGetAllPlanesListener { planeTypes, callback ->
+            if(!onReadyCalled) {
+                callback.invoke(ARPlaneDetectorBridge.mapToError("ARCore is not ready to obtain planes at this moment"), null)
+            } else {
+                if (ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
+                    val frame = arSceneView.session?.update()
+                    if(frame != null) {
+                        val planes = frame.getUpdatedTrackables(Plane::class.java)
+                        planes.filter { planeTypes.contains(it.type) }.forEach {
+                            callback.invoke(null, ARPlaneDetectorBridge.mapPlanesToWritableMap(it))
+                        }
+                    } else {
+                        callback.invoke(ARPlaneDetectorBridge.mapToError("ARCore couldn't provide planes at this moment"), null)
+                    }
+                } else {
+                    callback.invoke(ARPlaneDetectorBridge.mapToError("PlaneDetection mode is not enabled"), null)
+                }
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
