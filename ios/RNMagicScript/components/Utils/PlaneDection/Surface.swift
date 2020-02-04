@@ -19,6 +19,7 @@ import ARKit
 
 class Surface: NSObject {
     fileprivate(set) var anchor: ARPlaneAnchor
+    fileprivate(set) var node: SCNNode
 
     var id: UUID {
         return anchor.identifier
@@ -50,11 +51,13 @@ class Surface: NSObject {
         return "Unknown"
     }
 
-    init(anchor: ARPlaneAnchor) {
+    init(anchor: ARPlaneAnchor, node: SCNNode) {
         self.anchor = anchor
+        self.node = node
     }
 
-    func update(anchor: ARPlaneAnchor) {
+    func update(anchor: ARPlaneAnchor, node: SCNNode) {
         self.anchor = anchor
+        self.node = node
     }
 }

@@ -30,12 +30,20 @@ import SceneKit
 
         // trigger stored configuration (if ARView was created after PlaneDetector)
         let planeDetection = Convert.toPlaneDetection(configuration["planeType"])
+
+        // Add tap gesture for Planes
+        let uiTapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                            action: #selector(handleTapGesture(_:)))
+        uiTapGestureRecognizer.delegate = self
+        arView.addGestureRecognizer(uiTapGestureRecognizer)
+
         self.arView?.enablePlaneDetection(planeDetection)
     }
 
     @objc public func enablePlaneDetection(with configuration: [String: Any]) {
         self.configuration = configuration
         let planeDetection = Convert.toPlaneDetection(configuration["planeType"])
+
         self.arView?.enablePlaneDetection(planeDetection)
     }
 
@@ -52,7 +60,7 @@ import SceneKit
                 vertices.append([CGFloat(vertice.x), CGFloat(vertice.y), CGFloat(vertice.z)])
             }
 
-            result[id] = [ "id": surface.id, "type": surface.type, "vertices": vertices, "center": surface.center, "normal": surface.normal]
+            result[id] = [ "id": surface.id, "type": surface.type, "vertices": vertices, "center": surface.center, "normal": surface.normal ]
         }
         return result
     }
@@ -70,18 +78,18 @@ import SceneKit
 
         // notify JSX layer
         self.onPlaneDetected?(self,
-                            surfaceNode.surface.id,
-                            surfaceNode.surface.type,
-                            vertices,
-                            surfaceNode.surface.center.toArrayOfCGFloat,
-                            surfaceNode.surface.normal.toArrayOfCGFloat)
+                              surfaceNode.surface.id,
+                              surfaceNode.surface.type,
+                              vertices,
+                              surfaceNode.surface.center.toArrayOfCGFloat,
+                              surfaceNode.surface.normal.toArrayOfCGFloat)
 
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let surfaceAnchor = anchor as? ARPlaneAnchor else { return }
 
-        let surface = Surface(anchor: surfaceAnchor)
+        let surface = Surface(anchor: surfaceAnchor, node: node)
 
         var vertices = [[CGFloat]]()
         for vertice in surface.vertices {
@@ -92,18 +100,30 @@ import SceneKit
 
         // notify JSX layer
         self.onPlaneDetected?(self,
-                            surface.id,
-                            surface.type,
-                            vertices,
-                            surface.center.toArrayOfCGFloat,
-                            surface.normal.toArrayOfCGFloat)
+                              surface.id,
+                              surface.type,
+                              vertices,
+                              surface.center.toArrayOfCGFloat,
+                              surface.normal.toArrayOfCGFloat)
+
+
+        // Create a custom object to visualize the plane geometry and extent.
+        let surfaceNode = SurfaceNode(anchor: surfaceAnchor, in: (arView?.arView)!)
+        surfaceNode.surface = surface
+
+        // Add the visualization to the ARKit-managed node so that it tracks
+        // changes in the plane anchor as plane estimation continues.
+        node.addChildNode(surfaceNode)
+
+        node.name = surface.id.uuidString
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         guard let surfaceAnchor = anchor as? ARPlaneAnchor,
-            let surface = surfaces[surfaceAnchor.identifier.uuidString] else { return }
+            let surface = surfaces[surfaceAnchor.identifier.uuidString],
+            let surfaceNode = node.childNodes.first as? SurfaceNode else { return }
 
-        surface.update(anchor: surfaceAnchor)
+        surface.update(anchor: surfaceAnchor, node: node)
 
         var vertices = [[CGFloat]]()
         for vertice in surface.vertices {
@@ -112,11 +132,26 @@ import SceneKit
 
         // notify JSX layer
         self.onPlaneUpdated?(self,
-                            surface.id,
-                            surface.type,
-                            vertices,
-                            surface.center.toArrayOfCGFloat,
-                            surface.normal.toArrayOfCGFloat)
+                             surface.id,
+                             surface.type,
+                             vertices,
+                             surface.center.toArrayOfCGFloat,
+                             surface.normal.toArrayOfCGFloat)
+
+        // Update ARSCNPlaneGeometry to the anchor's new estimated shape.
+        if let planeGeometry = surfaceNode.meshNode.geometry as? ARSCNPlaneGeometry {
+            planeGeometry.update(from: surfaceAnchor.geometry)
+        }
+
+        // Update extent visualization to the anchor's new bounding rectangle.
+        if let extentGeometry = surfaceNode.extentNode.geometry as? SCNPlane {
+            extentGeometry.width = CGFloat(surfaceAnchor.extent.x)
+            extentGeometry.height = CGFloat(surfaceAnchor.extent.z)
+            surfaceNode.extentNode.simdPosition = surfaceAnchor.center
+        }
+
+        surfaceNode.surface = surface
+        node.name = surface.id.uuidString
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
@@ -132,10 +167,27 @@ import SceneKit
 
         // notify JSX layer
         self.onPlaneRemoved?(self,
-                            surface.id,
-                            surface.type,
-                            vertices,
-                            surface.center.toArrayOfCGFloat,
-                            surface.normal.toArrayOfCGFloat)
+                             surface.id,
+                             surface.type,
+                             vertices,
+                             surface.center.toArrayOfCGFloat,
+                             surface.normal.toArrayOfCGFloat)
+    }
+}
+
+extension PlaneDetector: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+
+    @objc func handleTapGesture(_ sender: TapGestureRecognizer) {
+        if sender.state == .ended {
+            let location: CGPoint = sender.location(in: self.arView?.arView)
+            if let hits = self.arView?.arView.hitTest(location, types: [.existingPlaneUsingGeometry]) {
+                for hit in hits {
+                    print("BUKA \(SCNMatrix4(hit.worldTransform).position)")
+                }
+            }
+        }
     }
 }
