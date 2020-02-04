@@ -37,7 +37,7 @@ class Surface: NSObject {
         // Convert vertices to correct format
         var result = [SCNVector3]()
         for vertice in anchor.geometry.boundaryVertices {
-            result.append(SCNVector3(vertice))
+            result.append(SCNMatrix4(anchor.transform) * SCNVector3(vertice))
         }
         return result
     }
