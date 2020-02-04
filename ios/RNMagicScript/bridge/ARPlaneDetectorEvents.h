@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
 - (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
 - (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal point:(NSArray<NSNumber *> *)point;
 @end
 
 NS_ASSUME_NONNULL_END

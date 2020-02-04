@@ -108,7 +108,7 @@ RCT_EXPORT_MODULE();
      }];
 }
 
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal {
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal point:(NSArray<NSNumber *> *)point {
     [self onEventWithName:@"onPlaneTapped" sender:sender body:
      @{
          @"id": [id UUIDString],
@@ -116,6 +116,7 @@ RCT_EXPORT_MODULE();
          @"vertices": vertices,
          @"center": center,
          @"normal": normal,
+         @"point": point
      }];
 }
 

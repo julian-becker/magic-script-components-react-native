@@ -83,8 +83,8 @@ RCT_EXPORT_METHOD(addOnPlaneRemovedEventHandler) {
 
 RCT_EXPORT_METHOD(addOnPlaneTappedEventHandler) {
     NSLog(@"addOnPlaneTappedEventHandler");
-    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender, NSUUID *id, NSString *type, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center, NSArray<NSNumber *> *normal) {
-        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender id:id type:type vertices:vertices center:center normal:normal];
+    PlaneDetector.instance.onPlaneTapped = ^(PlaneDetector *sender, NSUUID *id, NSString *type, NSArray<NSArray<NSNumber *> *> *vertices, NSArray<NSNumber *> *center, NSArray<NSNumber *> *normal, NSArray<NSNumber *> *point) {
+        [[ARPlaneDetectorEvents instance] onPlaneTappedEventReceived:sender id:id type:type vertices:vertices center:center normal:normal point:point];
     };
 }
 

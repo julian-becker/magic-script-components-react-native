@@ -68,22 +68,22 @@ import SceneKit
     @objc public var onPlaneDetected: ((_ sender: PlaneDetector, _ id: UUID?, _ type: String, _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat]) -> Void)?
     @objc public var onPlaneUpdated: ((_ sender: PlaneDetector, _ id: UUID?, _ type: String, _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat]) -> Void)?
     @objc public var onPlaneRemoved: ((_ sender: PlaneDetector, _ id: UUID?, _ type: String, _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat]) -> Void)?
-    @objc public var onPlaneTapped: ((_ sender: PlaneDetector, _ id: UUID?, _ type: String, _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat]) -> Void)?
+    @objc public var onPlaneTapped: ((_ sender: PlaneDetector, _ id: UUID?, _ type: String, _ vertices: [[CGFloat]], _ center: [CGFloat], _ normal: [CGFloat], _ point: [CGFloat]) -> Void)?
 
-    func handleNodeTap(_ surfaceNode: SurfaceNode, _ touchPoint: CGPoint?) {
+    func handleNodeTap(_ surface: Surface, _ touchPoint: SCNVector3) {
         var vertices = [[CGFloat]]()
-        for vertice in surfaceNode.surface.vertices {
+        for vertice in surface.vertices {
             vertices.append([CGFloat(vertice.x), CGFloat(vertice.y), CGFloat(vertice.z)])
         }
 
         // notify JSX layer
-        self.onPlaneDetected?(self,
-                              surfaceNode.surface.id,
-                              surfaceNode.surface.type,
-                              vertices,
-                              surfaceNode.surface.center.toArrayOfCGFloat,
-                              surfaceNode.surface.normal.toArrayOfCGFloat)
-
+        self.onPlaneTapped?(self,
+                            surface.id,
+                            surface.type,
+                            vertices,
+                            surface.center.toArrayOfCGFloat,
+                            surface.normal.toArrayOfCGFloat,
+                            touchPoint.toArrayOfCGFloat)
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
@@ -185,7 +185,9 @@ extension PlaneDetector: UIGestureRecognizerDelegate {
             let location: CGPoint = sender.location(in: self.arView?.arView)
             if let hits = self.arView?.arView.hitTest(location, types: [.existingPlaneUsingGeometry]) {
                 for hit in hits {
-                    print("BUKA \(SCNMatrix4(hit.worldTransform).position)")
+                    if let surfaceId = hit.anchor?.identifier.uuidString, let tappedSurface = surfaces[surfaceId] {
+                        handleNodeTap(tappedSurface, SCNMatrix4(hit.worldTransform).position)
+                    }
                 }
             }
         }
