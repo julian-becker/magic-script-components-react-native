@@ -40,6 +40,4 @@ interface NodesManager {
     fun removeNode(nodeId: String)
 
     fun clear()
-
-    fun onTapArPlane(anchor: Anchor)
 }

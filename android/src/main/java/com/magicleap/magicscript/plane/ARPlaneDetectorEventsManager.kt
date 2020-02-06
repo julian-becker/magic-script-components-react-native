@@ -6,4 +6,5 @@ interface ARPlaneDetectorEventsManager {
     fun onPlaneUpdatedEventReceived(planes: WritableMap)
     fun onPlaneDetectedEventReceived(planes: WritableMap)
     fun onPlaneRemovedEventReceived(planes: WritableMap)
+    fun onPlaneTappedListener(planes: WritableMap)
 }

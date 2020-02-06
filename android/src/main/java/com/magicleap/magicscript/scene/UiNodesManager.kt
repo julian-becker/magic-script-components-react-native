@@ -36,7 +36,6 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
-    var planeDetection = false
 
     companion object {
         val INSTANCE = UiNodesManager()
@@ -59,14 +58,6 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         this.scene = scene
         if (arReady) {
             scene.addChild(rootNode)
-        }
-    }
-
-    @Synchronized
-    override fun onTapArPlane(anchor: Anchor) {
-        if (planeDetection) {
-            planeDetection = false
-            rootNode.anchor = anchor
         }
     }
 

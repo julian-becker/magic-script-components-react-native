@@ -17,6 +17,10 @@ class ARPlaneDetectorEvents(private val reactContext: ReactContext): ARPlaneDete
         sendEvent("onPlaneUpdated", planes)
     }
 
+    override fun onPlaneTappedListener(planes: WritableMap) {
+        sendEvent("onPlaneTapped", planes)
+    }
+
     private fun sendEvent(eventName: String, payload: WritableMap) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                 .emit(eventName, payload)

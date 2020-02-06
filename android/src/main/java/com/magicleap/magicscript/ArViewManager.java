@@ -74,11 +74,6 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
         return mContainer;
     }
 
-    @ReactProp(name = "planeDetection")
-    public void setPlaneDetection(View view, @Nullable Boolean planeDetection) {
-        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
-    }
-
     @ReactProp(name = "showLayoutBounds")
     public void setShowLayoutBounds(View view, @Nullable Boolean showLayoutBounds) {
         ArViewManager.showLayoutBounds = showLayoutBounds;

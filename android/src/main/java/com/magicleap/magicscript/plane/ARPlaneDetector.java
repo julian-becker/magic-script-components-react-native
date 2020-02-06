@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.magicleap.magicscript.scene.UiNodesManager;
@@ -29,14 +30,12 @@ public class ARPlaneDetector extends ReactContextBaseJavaModule implements Lifec
 
     @ReactMethod
     public void startDetecting(final ReadableMap configuration) {
-        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
-        bridge.setIsDetecting(true);
+        bridge.startDetecting(configuration);
     }
 
     @ReactMethod
     public void stopDetecting() {
-        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(false);
-        bridge.setIsDetecting(false);
+        bridge.stopDetecting();
     }
 
     @ReactMethod
@@ -52,6 +51,11 @@ public class ARPlaneDetector extends ReactContextBaseJavaModule implements Lifec
     @ReactMethod
     public void addOnPlaneRemovedEventHandler() {
         mainHandler.post(() -> this.bridge.setOnPlanesRemovedListener(eventsManager::onPlaneRemovedEventReceived));
+    }
+
+    @ReactMethod
+    public void addOnPlaneTappedEventHandler() {
+        mainHandler.post(() -> this.bridge.setOnPlaneTappedListener(eventsManager::onPlaneTappedListener));
     }
 
     @ReactMethod
