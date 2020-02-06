@@ -75,7 +75,7 @@ import SceneKit
             _configuration!.worldAlignment = ARConfiguration.WorldAlignment.gravity
             _configuration!.providesAudioData = false
 
-            _configuration!.planeDetection = [.horizontal, .vertical]
+            _configuration!.planeDetection = []
 
             return _configuration
         }
@@ -83,13 +83,13 @@ import SceneKit
         return _configuration
     }
 
-    fileprivate func enablePlaneDetection() {
-        configuration?.planeDetection = [.horizontal, .vertical]
+    func enablePlaneDetection(_ configuration: ARWorldTrackingConfiguration.PlaneDetection) {
+        self.configuration?.planeDetection = configuration
         reset()
     }
 
-    fileprivate func disablePlaneDetection() {
-        configuration?.planeDetection = []
+    func disablePlaneDetection() {
+        self.configuration?.planeDetection = []
         reset()
     }
 

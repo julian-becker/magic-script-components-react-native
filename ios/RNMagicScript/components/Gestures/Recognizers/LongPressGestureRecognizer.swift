@@ -106,5 +106,3 @@ import SceneKit
         super.reset()
     }
 }
-
-

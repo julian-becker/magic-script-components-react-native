@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
@@ -20,15 +20,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PlaneDetector;
-@class PlaneNode;
 
 @interface ARPlaneDetectorEvents : RCTEventEmitter <RCTBridgeModule>
 + (instancetype)instance;
 
-- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
-- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
-- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
-- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender plane:(PlaneNode *)plane id:(NSUUID *)id type:(NSString *)type  position:(NSArray<NSNumber *> *)position rotation:(NSArray<NSNumber *> *)rotation vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal width:(CGFloat)width height:(CGFloat)height;
+- (void)onPlaneDetectedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
+- (void)onPlaneUpdatedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
+- (void)onPlaneRemovedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal;
+- (void)onPlaneTappedEventReceived:(PlaneDetector *)sender id:(NSUUID *)id type:(NSString *)type vertices:(NSArray<NSArray<NSNumber *> *> *)vertices center:(NSArray<NSNumber *> *)center normal:(NSArray<NSNumber *> *)normal point:(NSArray<NSNumber *> *)point;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -2125,14 +2125,14 @@ open class GestureHandlingMock: NSObject, GestureHandling, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_handleTapGesture__sender(let lhsSender), .m_handleTapGesture__sender(let rhsSender)):
-                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
-                return true 
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false }
+                return true
             case (.m_handleDragGesture__sender(let lhsSender), .m_handleDragGesture__sender(let rhsSender)):
-                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
-                return true 
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false }
+                return true
             case (.m_handleLongPressGesture__sender(let lhsSender), .m_handleLongPressGesture__sender(let rhsSender)):
-                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
-                return true 
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false }
+                return true
             default: return false
             }
         }

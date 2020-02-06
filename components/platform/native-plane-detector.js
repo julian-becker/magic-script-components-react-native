@@ -56,62 +56,57 @@ export default class NativePlaneDetector {
 
     // callbacks registration
     addOnPlaneDetectedObserver(observer, observerCallback) {
-        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
-        // console.log("addOnPlaneDetectedObserver - observer: ", observer);
+        // observerCallback sample data: Plane: { normal: [x, y, z], center: [x, y, z], vertices: [[x, y, z]], id: UUID, type: [String] }
         const subscriptionName = "onPlaneDetected";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 
         // update subscription tracking
        this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-        if (!(subscriptionName in this.subscriptionEnabled)) { 
-            this.arPlaneDetector.addOnPlaneDetectedEventHandler(); 
-            this.subscriptionEnabled[subscriptionName] = true; 
+        if (!(subscriptionName in this.subscriptionEnabled)) {
+            this.arPlaneDetector.addOnPlaneDetectedEventHandler();
+            this.subscriptionEnabled[subscriptionName] = true;
         }
     }
 
     addOnPlaneUpdatedObserver(observer, observerCallback) {
-        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
-        // console.log("addOnPlaneUpdatedObserver - observer: ", observer);
+        // observerCallback sample data: Plane: { normal: [x, y, z], center: [x, y, z], vertices: [[x, y, z]], id: UUID, type: [String] }
         const subscriptionName = "onPlaneUpdated";
         const subscription = this.arPlaneDetectorEventManager.addListener("onPlaneUpdated", observerCallback);
 
         // update subscription tracking
        this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-       if (!(subscriptionName in this.subscriptionEnabled)) { 
+       if (!(subscriptionName in this.subscriptionEnabled)) {
         this.arPlaneDetector.addOnPlaneUpdatedEventHandler();
-           this.subscriptionEnabled[subscriptionName] = true; 
+           this.subscriptionEnabled[subscriptionName] = true;
        }
     }
 
     addOnPlaneRemovedObserver(observer, observerCallback) {
-        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
-        // console.log("addOnPlaneRemovedObserver - observer: ", observer);
+        // observerCallback sample data: Plane: { normal: [x, y, z], center: [x, y, z], vertices: [[x, y, z]], id: UUID, type: [String] }
         const subscriptionName = "onPlaneRemoved";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 
         // update subscription tracking
         this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
 
-        if (!(subscriptionName in this.subscriptionEnabled)) { 
+        if (!(subscriptionName in this.subscriptionEnabled)) {
             this.arPlaneDetector.addOnPlaneRemovedEventHandler();
-            this.subscriptionEnabled[subscriptionName] = true; 
+            this.subscriptionEnabled[subscriptionName] = true;
         }
     }
 
     addOnPlaneTappedObserver(observer, observerCallback) {
-        // observerCallback sample data: Plane: { position: [x, y, z], rotation: [x, y, z], width: float, height: float, center: [x, y, z], normal: [x, y, z], vertices: [[x, y, z]], type: String, id: UUID }
-        // console.log("addOnPlaneTappedObserver - observer: ", observer);
+        // observerCallback sample data: Plane: { normal: [x, y, z], center: [x, y, z], vertices: [[x, y, z]], id: UUID, type: [String] }
         const subscriptionName = "onPlaneTapped";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 
         // update subscription tracking
         this._registerSubscriptionForObserver(subscriptionName, subscription, observer);
-
-        if (!(subscriptionName in this.subscriptionEnabled)) { 
+        if (!(subscriptionName in this.subscriptionEnabled)) {
             this.arPlaneDetector.addOnPlaneTappedEventHandler();
-            this.subscriptionEnabled[subscriptionName] = true; 
+            this.subscriptionEnabled[subscriptionName] = true;
         }
     }
 

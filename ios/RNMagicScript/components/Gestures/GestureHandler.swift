@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import UIKit
 
@@ -26,11 +26,6 @@ import UIKit
 
 class GestureHandler: GestureHandling {
     @objc func handleTapGesture(_ sender: TapGestureRecognizer) {
-        if let planeNode = sender.tappedNode as? PlaneNode {
-            PlaneDetector.instance.handleNodeTap(planeNode, sender.initialTouchLocation)
-            return
-        }
-
         if sender.state == .ended {
             UiNodesManager.instance.handleNodeTap(sender.tappedNode)
         }
