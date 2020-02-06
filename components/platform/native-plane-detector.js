@@ -32,10 +32,8 @@ export default class NativePlaneDetector {
         // configuration sample: { planeType: ["horizontal", "vertical"] }
         this.arPlaneDetector.getAllPlanes(configuration, (error, planes) => {
             if (error) {
-                console.log('NativePlaneDetector/getAllPlanes/error')
                 callback(error, null);
               } else {
-                console.log('NativePlaneDetector/getAllPlanes/planes')
                 callback(null, planes);
               }
         });
