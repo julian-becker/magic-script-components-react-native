@@ -77,11 +77,14 @@ class CustomScrollView @JvmOverloads constructor(
      */
     var position = Vector2()
         set(value) {
-            field = value.coerceIn(MIN_POSITION, MAX_POSITION)
-            hBar?.thumbPosition = value.x
-            vBar?.thumbPosition = value.y
-            onScrollChangeListener?.invoke(value)
-            invalidate()
+            val normalizedValue = value.coerceIn(MIN_POSITION, MAX_POSITION)
+            if (!field.equalInexact(normalizedValue)) {
+                field = normalizedValue
+                hBar?.thumbPosition = value.x
+                vBar?.thumbPosition = value.y
+                onScrollChangeListener?.invoke(value)
+                invalidate()
+            }
         }
 
     var hBar: CustomScrollBar? = null
@@ -171,7 +174,11 @@ class CustomScrollView @JvmOverloads constructor(
             val movePx = previousTouch - touch
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
-            lastMove = movePx / maxTravel
+
+            val moveX = if (maxTravel.x != 0f) movePx.x / maxTravel.x else 0f
+            val moveY = if (maxTravel.y != 0f) movePx.y / maxTravel.y else 0f
+
+            lastMove = Vector2(moveX, moveY)
 
             when (scrollDirection) {
                 SCROLL_DIRECTION_VERTICAL -> lastMove.x = 0F
