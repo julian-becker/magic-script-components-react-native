@@ -232,4 +232,9 @@ class Convert {
         guard let type = value as? String else { return nil }
         return ButtonType(rawValue: type)
     }
+    
+    static func toLabelDisplayMode(_ value: Any?) -> LabelDisplayMode? {
+        guard let side = value as? String else { return nil }
+        return LabelDisplayMode(rawValue: side)
+    }
 }

@@ -41,7 +41,6 @@ import SceneKit
         get { return labelNode.text }
         set { _text = newValue; labelNode.text = convertTextForButtonType(text: newValue); reloadOutline = true; setNeedsLayout() }
     }
-
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; reloadOutline = true; setNeedsLayout() }
     }
@@ -51,49 +50,45 @@ import SceneKit
     @objc var textSize: CGFloat = 0 {
         didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
-    @objc var iconSize: CGFloat = 0.1
-    @objc var iconType: String = "" {
-        didSet {
-            iconNode.geometry?.firstMaterial?.diffuse.contents = SystemIcon(iconType).getImage()
-            setNeedsLayout()
-        }
+    @objc var iconSize: CGSize = CGSize.zero {
+        didSet { setNeedsLayout() }
     }
-
-    @objc var labelSide: Side = .right {
-        didSet {
-            setNeedsLayout()
-        }
-    }
-
     @objc var buttonType: ButtonType = .simple {
         didSet {
-            switch buttonType {
-            case .simple:
-                labelNode.isHidden = false
-                iconNode.isHidden = true
-            case .iconWithLabel:
-                labelNode.isHidden = true
-                iconNode.isHidden = false
-            case .textWithIcon:
-                labelNode.isHidden = false
-                iconNode.isHidden = false
-            case .icon:
-                labelNode.isHidden = true
-                iconNode.isHidden = false
-            case .text:
-                labelNode.isHidden = false
-                iconNode.isHidden = true
-            }
+            updateButtonType()
             text = convertTextForButtonType(text: _text)
             setNeedsLayout()
         }
     }
-
-    @objc var width: CGFloat = 0 {
-        didSet { reloadOutline = true; setNeedsLayout() }
+    @objc var iconScale: CGFloat = 1.0 {
+        didSet { setNeedsLayout() }
+    }
+    @objc var labelSide: Side = .right {
+        // What side the button label text sits on, used in kIconWithLabel.
+        didSet { setNeedsLayout() }
+    }
+    @objc var labelDisplayMode: LabelDisplayMode = .always {
+        // The display mode of the label, used in kIconWithLabel.
+        didSet { updateButtonType() }
+    }
+    @objc var outlineButton: Bool = false {
+        // Whether the button has an outline. Considered only for kText and kTextWithIcon type button.
+        didSet { setNeedsLayout() }
     }
     @objc var height: CGFloat = 0 {
+        // Height of the button, (default 0 = default button height).
         didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
+    }
+    @objc var width: CGFloat = 0 {
+        // Width of the button, (default 0 = auto calculated width).
+        didSet { reloadOutline = true; setNeedsLayout() }
+    }
+    @objc var iconType: String = "" {
+        // The type of SystemIcon to be used for the eclipse button.
+        didSet {
+            iconNode.geometry?.firstMaterial?.diffuse.contents = SystemIcon(iconType).getImage()
+            setNeedsLayout()
+        }
     }
     fileprivate var _roundness: CGFloat = 1.0
     @objc var roundness: CGFloat {
@@ -125,10 +120,9 @@ import SceneKit
         labelNode = LabelNode()
         labelNode.textAlignment = .center
         labelNode.defaultTextSize = UiButtonNode.defaultTextSize
+        contentNode.addChildNode(labelNode)
 
         iconNode = NodesFactory.createPlaneNode(width: 1, height: 1)
-
-        contentNode.addChildNode(labelNode)
         contentNode.addChildNode(iconNode)
     }
 
@@ -142,41 +136,53 @@ import SceneKit
         if let textColor = Convert.toColor(props["textColor"]) {
             self.textColor = textColor
         }
+        
+        if let iconColor = Convert.toColor(props["iconColor"]) {
+            self.iconColor = iconColor
+        }
 
         if let textSize = Convert.toCGFloat(props["textSize"]) {
             self.textSize = textSize
         }
 
-        if let iconColor = Convert.toColor(props["iconColor"]) {
-            self.iconColor = iconColor
-        }
-
-        if let iconSize = Convert.toCGFloat(props["iconSize"]) {
+        if let iconSize = Convert.toCGSize(props["iconSize"]) {
             self.iconSize = iconSize
         }
-
-        if let iconType = Convert.toString(props["iconType"]) {
-            self.iconType = iconType
+        
+        if let buttonType = Convert.toButtonType(props["type"]) {
+            self.buttonType = buttonType
+        }
+        
+        if let iconScale = Convert.toCGFloat(props["iconScale"]) {
+            self.iconScale = iconScale
+        }
+        
+        if let labelSide = Convert.toSide(props["labelSide"]) {
+            self.labelSide = labelSide
+        }
+        
+        if let labelDisplayMode = Convert.toLabelDisplayMode(props["labelDisplayMode"]) {
+            self.labelDisplayMode = labelDisplayMode
         }
 
-        if let width = Convert.toCGFloat(props["width"]) {
-            self.width = width
+        if let outlineButton = Convert.toBool(props["outlineButton"]) {
+            self.outlineButton = outlineButton
         }
 
         if let height = Convert.toCGFloat(props["height"]) {
             self.height = height
         }
+        
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+        
+        if let iconType = Convert.toString(props["iconType"]) {
+            self.iconType = iconType
+        }
 
         if let roundness = Convert.toCGFloat(props["roundness"]) {
             self.roundness = roundness
-        }
-
-        if let buttonType = Convert.toButtonType(props["type"]) {
-            self.buttonType = buttonType
-        }
-
-        if let labelSide = Convert.toSide(props["labelSide"]) {
-            self.labelSide = labelSide
         }
     }
 
@@ -213,7 +219,6 @@ import SceneKit
         default:
             return CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
         }
-
     }
 
     @objc override func updateLayout() {
@@ -236,48 +241,66 @@ import SceneKit
 
         outlineNode?.position = getOutlinePosition()
     }
+    
+    fileprivate func updateButtonType() {
+        switch buttonType {
+        case .simple:
+            labelNode.isHidden = false
+            iconNode.isHidden = true
+        case .iconWithLabel:
+            labelNode.isHidden = (labelDisplayMode == .hover)
+            iconNode.isHidden = false
+        case .textWithIcon:
+            labelNode.isHidden = false
+            iconNode.isHidden = false
+        case .icon:
+            labelNode.isHidden = true
+            iconNode.isHidden = false
+        case .text:
+            labelNode.isHidden = false
+            iconNode.isHidden = true
+        }
+    }
 
     fileprivate func getButtonSize(includeOutline: Bool = true) -> CGSize {
         let labelSize = labelNode.getSize()
         let iconSize = getIconSize()
 
-        let contentHeight = height > 0 ? height : max(labelSize.height, iconSize.height)
-        let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.15 * contentHeight : 0
-        let contentWidth = width > 0 ? width : labelSize.width + gap + iconSize.width
+        let defaultHeight = height > 0 ? height : max(labelSize.height, iconSize.height)
+        let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.15 * defaultHeight : 0
 
         switch buttonType {
         case .iconWithLabel:
             switch labelSide {
             case .top, .bottom:
-                let gap: CGFloat = (labelSize.height > 0 && iconSize.height > 0) ? 0.15 * height > 0 ? height : max(labelSize.height, iconSize.height) : 0
-                let contentHeight = height > 0 ? height : getOutlineNodeSize().height + labelSize.height + 0.5 * gap
-                let contentWidth = width > 0 ? width : max(labelSize.width, getOutlineNodeSize().width)
+                let contentHeight = height > 0 ? height : labelSize.height + iconSize.height + gap
+                let contentWidth = width > 0 ? width : max(labelSize.width, iconSize.width)
                 return CGSize(width: contentWidth, height: contentHeight)
-            default:
-                let contentHeight = height > 0 ? height : getOutlineNodeSize().height
-                let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.15 * contentHeight : 0
-                let contentWidth = width > 0 ? width : labelSize.width + getOutlineNodeSize().width + gap
+            case .left, .right:
+                let contentHeight = defaultHeight
+                let contentWidth = width > 0 ? width : labelSize.width + iconSize.width + gap
                 return CGSize(width: contentWidth, height: contentHeight)
             }
         case .icon:
-                return CGSize(width: getOutlineNodeSize().width, height: getOutlineNodeSize().height)
-        default:
+            return getOutlineNodeSize()
+        case .text, .textWithIcon, .simple:
+            let defaultWidth = width > 0 ? width : labelSize.width + gap + iconSize.width
+
             if includeOutline {
                 let buttonToTextHeightMultiplier: CGFloat = 1.6
-                return CGSize(width: contentWidth + buttonToTextHeightMultiplier * contentHeight, height: buttonToTextHeightMultiplier * contentHeight)
+                let extraHeight = buttonToTextHeightMultiplier * defaultHeight
+                return CGSize(width: defaultWidth + extraHeight, height: extraHeight)
             }
-            return CGSize(width: contentWidth, height: contentHeight)
+            return CGSize(width: defaultWidth, height: defaultHeight)
         }
     }
 
-    func getIconSize() -> CGSize {
-        getIconSize(height: height > 0 ? height : labelNode.getSize().height * 2.1)
-    }
-
-    fileprivate func getIconSize(height: CGFloat) -> CGSize {
+    // TODO: Check how icon size depends on button/text size
+    fileprivate func getIconSize() -> CGSize {
         switch buttonType {
         case .iconWithLabel, .textWithIcon, .icon:
-            return 0.65 * CGSize(width: height, height: height)
+            let size = height > 0 ? height : 2.1 * labelNode.getSize().height
+            return 0.65 * CGSize(width: size, height: size)
         default:
             return CGSize.zero
         }
@@ -317,10 +340,8 @@ import SceneKit
         var outlineSize: CGSize = CGSize.zero
         switch buttonType {
         case .iconWithLabel, .icon:
-            if height > 0 {
-                outlineSize = getIconSize(height: height) * 1.6
-            } else if labelSize.height > 0 {
-                outlineSize = getIconSize(height: labelSize.height * 2.1) * 1.6
+            if height > 0 || labelSize.height > 0{
+                outlineSize = getIconSize() * 1.6
             } else {
                 outlineSize = CGSize(width: 0.15, height: 0.15)
             }
@@ -375,7 +396,6 @@ import SceneKit
 
 extension UiButtonNode: TapSimulating, CAAnimationDelegate {
     func simulateTap() {
-
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")
         animation.fromValue = initialPosition.z
@@ -395,8 +415,8 @@ extension UiButtonNode: TapSimulating, CAAnimationDelegate {
             outlineNode.isHidden = false
         case .textWithIcon, .text:
             outlineNode.isHidden = false
-        default:
-            print("")
+        case .simple: break
+        case .icon: break
         }
     }
 
@@ -407,8 +427,8 @@ extension UiButtonNode: TapSimulating, CAAnimationDelegate {
             outlineNode.isHidden = true
         case .textWithIcon, .text:
             outlineNode.isHidden = true
-        default:
-            print("")
+        case .simple: break
+        case .icon: break
         }
     }
 }

@@ -46,6 +46,8 @@
 		4444471A236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		44489F0A237BF2E70046F16B /* SoundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F09237BF2E70046F16B /* SoundNode.swift */; };
 		44489F0B237BF2E70046F16B /* SoundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F09237BF2E70046F16B /* SoundNode.swift */; };
+		4452ECC32420B40B00853E29 /* LabelDisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4452ECC22420B40B00853E29 /* LabelDisplayMode.swift */; };
+		4452ECC42420B40B00853E29 /* LabelDisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4452ECC22420B40B00853E29 /* LabelDisplayMode.swift */; };
 		4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
@@ -620,6 +622,7 @@
 		44444718236AFD5A00665D31 /* Dragging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dragging.swift; sourceTree = "<group>"; };
 		44489F09237BF2E70046F16B /* SoundNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundNode.swift; sourceTree = "<group>"; };
 		44489F10237C2B130046F16B /* SoundNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundNodeSpec.swift; sourceTree = "<group>"; };
+		4452ECC22420B40B00853E29 /* LabelDisplayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDisplayMode.swift; sourceTree = "<group>"; };
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
@@ -1297,6 +1300,7 @@
 				44AFAC13232B9BCF005AC8EF /* FontStyle.swift */,
 				44AFAC14232B9BCF005AC8EF /* FontWeight.swift */,
 				44AFAC16232B9BCF005AC8EF /* HorizontalTextAlignment.swift */,
+				4452ECC22420B40B00853E29 /* LabelDisplayMode.swift */,
 				44F596412355C5B500C60F4C /* Orientation.swift */,
 				44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */,
 				44556553234C9FF800301AB3 /* ScrollDirection.swift */,
@@ -2379,6 +2383,7 @@
 				44AFAD25232BCAE3005AC8EF /* FileManager+Extension.swift in Sources */,
 				44301CC323AC165C001A1766 /* GroupContainer.swift in Sources */,
 				44739B9A2398034300EC31A0 /* NumberFormatter+Extension.swift in Sources */,
+				4452ECC42420B40B00853E29 /* LabelDisplayMode.swift in Sources */,
 				C46014B423C73618002A63D4 /* GestureHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2623,6 +2628,7 @@
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,
 				C41BF27523853FE300FEC9BD /* UiCircleConfirmationNode.swift in Sources */,
 				C47B32C9239A829A005B59BE /* WeakReference.swift in Sources */,
+				4452ECC32420B40B00853E29 /* LabelDisplayMode.swift in Sources */,
 				C4B91AC32386B8A6002A24D6 /* ToggleType.swift in Sources */,
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44AB3976238BCD290002DF14 /* UiPageViewNode.swift in Sources */,
