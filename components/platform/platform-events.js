@@ -1,4 +1,10 @@
 export const Events = [
+  // Scene events
+  {
+    name: "onUpdateLoop",
+    handler: (componentManager, elementId) => componentManager.addOnUpdateLoopEventHandler(elementId)
+  },
+  // Prism events
   // UiNode events
   {
     name: "onActivate",
@@ -8,35 +14,34 @@ export const Events = [
     name: "onClick",
     handler: (componentManager, elementId) => componentManager.addOnActivateEventHandler(elementId)
   },
-  /*
-  {
-    name: "onPress",
-    handler: (componentManager, elementId) => componentManager.addOnPressEventHandler(elementId)
-  },
-  {
-    name: "onLongPress",
-    handler: (componentManager, elementId) => componentManager.addOnLongPressEventHandler(elementId)
-  },
-  {
-    name: "onRelease",
-    handler: (componentManager, elementId) => componentManager.addOnReleaseEventHandler(elementId)
-  },
-  {
-    name: "onEnabled",
-    handler: (componentManager, elementId) => componentManager.addOnEnabledEventHandler(elementId)
-  },
-  {
-    name: "onDisabled",
-    handler: (componentManager, elementId) => componentManager.addOnDisabledEventHandler(elementId)
-  },
-  {
-    name: "onFocusGained",
-    handler: (componentManager, elementId) => componentManager.addOnFocusGainedEventHandler(elementId)
-  },
-  {
-    name: "onFocusLost",
-    handler: (componentManager, elementId) => componentManager.addOnFocusLostEventHandler(elementId)
-  },
+  // {
+  //   name: "onPress",
+  //   handler: (componentManager, elementId) => componentManager.addOnPressEventHandler(elementId)
+  // },
+  // {
+  //   name: "onLongPress",
+  //   handler: (componentManager, elementId) => componentManager.addOnLongPressEventHandler(elementId)
+  // },
+  // {
+  //   name: "onRelease",
+  //   handler: (componentManager, elementId) => componentManager.addOnReleaseEventHandler(elementId)
+  // },
+  // {
+  //   name: "onEnabled",
+  //   handler: (componentManager, elementId) => componentManager.addOnEnabledEventHandler(elementId)
+  // },
+  // {
+  //   name: "onDisabled",
+  //   handler: (componentManager, elementId) => componentManager.addOnDisabledEventHandler(elementId)
+  // },
+  // {
+  //   name: "onFocusGained",
+  //   handler: (componentManager, elementId) => componentManager.addOnFocusGainedEventHandler(elementId)
+  // },
+  // {
+  //   name: "onFocusLost",
+  //   handler: (componentManager, elementId) => componentManager.addOnFocusLostEventHandler(elementId)
+  // },
   {
     name: "onUpdate",
     handler: (componentManager, elementId) => componentManager.addOnUpdateEventHandler(elementId)
@@ -45,7 +50,6 @@ export const Events = [
     name: "onDelete",
     handler: (componentManager, elementId) => componentManager.addOnDeleteEventHandler(elementId)
   },
-*/
   // Other events
   {
     name: "onDialogConfirmed",

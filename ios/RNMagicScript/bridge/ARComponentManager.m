@@ -298,6 +298,15 @@ RCT_EXPORT_METHOD(removeOnFocusLostEventHandler:(NSString *)nodeId) {
     node.onFocusLost = NULL;
 }
 
+RCT_EXPORT_METHOD(addOnUpdateLoopEventHandler:(NSString *)nodeId) {
+    BaseNode *node = [NodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[Scene class]]) {
+        ((Scene *)node).onUpdateLoop = ^(Scene *sender, NSTimeInterval time) {
+            [[AREventsManager instance] onUpdateLoopEventReceived:sender value: time];
+        };
+    }
+}
+
 RCT_EXPORT_METHOD(addOnUpdateEventHandler:(NSString *)nodeId) {
     UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onUpdate = ^(UiNode *sender) {

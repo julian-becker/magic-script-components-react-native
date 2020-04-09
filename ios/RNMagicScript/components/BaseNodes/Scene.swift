@@ -19,6 +19,8 @@ import SceneKit
 @objc open class Scene: BaseNode {
     @objc fileprivate(set) var rootNode: SCNNode = SCNNode()
     @objc fileprivate(set) var prisms: [Prism] = []
+    
+    @objc public var onUpdateLoop: ((_ sender: Scene, _ time: TimeInterval) -> Void)?
 
     @objc override init() {
         super.init()
@@ -37,6 +39,13 @@ import SceneKit
 
     @objc func setupScene() {
         addChildNode(rootNode)
+    }
+    
+    func updateLoop(_ time: TimeInterval) {
+        if let onUpdateLoop = onUpdateLoop {
+            onUpdateLoop(self, time)
+            print("[OUT] iOS - onUpdateLoop(\(time))")
+        }
     }
 
     @objc override func update(_ props: [String: Any]) { }

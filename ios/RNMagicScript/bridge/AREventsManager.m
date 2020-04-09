@@ -142,6 +142,10 @@ RCT_EXPORT_MODULE();
     [self onEventWithName:@"onFocusLost" sender:sender body:NULL];
 }
 
+- (void)onUpdateLoopEventReceived:(Scene *)sender value:(NSTimeInterval)value {
+    [self onEventWithName:@"onUpdateLoop" sender:sender body:@{ @"Time": @(value) }];
+}
+
 - (void)onUpdateEventReceived:(UiNode *)sender {
     [self onEventWithName:@"onUpdate" sender:sender body:NULL];
 }

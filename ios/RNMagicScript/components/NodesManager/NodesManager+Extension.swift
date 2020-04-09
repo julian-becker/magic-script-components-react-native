@@ -76,6 +76,10 @@ extension NodesManager: RCTARViewObserving {
             }
 #endif
         }
+        
+        if let scene = scene {
+            scene.updateLoop(time)
+        }
     }
     
 #if targetEnvironment(simulator)
