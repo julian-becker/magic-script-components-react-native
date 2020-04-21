@@ -26,6 +26,12 @@ import SceneKit
         get { return prisms.filter({ $0.editMode }).first }
         set { }
     }
+    
+    @objc var prismContextMenu: PrismContextMenu! {
+        didSet {
+            addChildNode(prismContextMenu)
+        }
+    }
 
     @objc override init() {
         super.init()
@@ -65,6 +71,7 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
+        if let menuHit = prismContextMenu?.hitTest(ray: ray) { return menuHit }
         for prism in prisms {
             if let hitResult = prism.hitTest(ray: ray) {
                 return hitResult

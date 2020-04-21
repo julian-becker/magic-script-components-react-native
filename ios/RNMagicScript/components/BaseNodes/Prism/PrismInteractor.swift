@@ -19,6 +19,11 @@ import ARKit
 import SceneKit
 
 //sourcery: AutoMockable
+protocol PrismInteractingDelegate: class {
+    func onPrismUpdate(prism: Prism)
+}
+
+//sourcery: AutoMockable
 protocol PrismInteracting: class {
     func toggleInteractions(for prism: Prism)
     func startInteractions(for prism: Prism)
@@ -28,9 +33,17 @@ protocol PrismInteracting: class {
 
 class PrismInteractor: NSObject, PrismInteracting {
 
+    weak var arView: RCTARView?
+
+    weak var delegate: PrismInteractingDelegate?
+
+    var interactedPrism: Prism? {
+        didSet {
+
+        }
+    }
+
     // MARK: Prism interaction variables
-    var interactedPrism: Prism?
-    private weak var arView: RCTARView?
     private var prevTime: TimeInterval = 0
     private var startInteractionTime: TimeInterval = 0
     private var startInteractionPosition: SCNVector3 = SCNVector3.zero
@@ -40,10 +53,8 @@ class PrismInteractor: NSObject, PrismInteracting {
     private var prismInitialScale: SCNVector3? = nil
     private var gestureRecognizers: [UIGestureRecognizer] = []
 
-    init(with arView: RCTARView?) {
+    override init() {
         super.init()
-
-        self.arView = arView
 
         let panGestureRecogrnizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         gestureRecognizers.append(panGestureRecogrnizer)
@@ -117,6 +128,7 @@ class PrismInteractor: NSObject, PrismInteracting {
         let prismYaw = (cameraNode.angleToWorldFront() - startDifferenceYaw) - prismYawChange
         prism.orientation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: prismYaw)
         prism.updateClipping()
+        delegate?.onPrismUpdate(prism: prism)
     }
 
     func stopInteractions(for prism: Prism) {
@@ -182,6 +194,7 @@ extension PrismInteractor {
                 scaleFactor = Math.clamp(scaleFactor, minScale.z, maxScale.z)
                 prism.scale = initialScale * scaleFactor
                 prism.updateClipping()
+                delegate?.onPrismUpdate(prism: prism)
             }
         case .cancelled, .ended, .failed:
             prismInitialScale = nil
